@@ -42,6 +42,14 @@ GET /api/v1/account
 Response :
 ```
 200 : User connected
-400 : Username is empty or validation failed
-409 : User with this username already exist
+```
+```json
+    {
+        "users": [
+            {
+                "id": "00000000-0000-0000-0000-000000000000",
+                "username": "..."
+            }
+        ]
+    }
 ```
