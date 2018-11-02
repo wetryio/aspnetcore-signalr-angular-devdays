@@ -18,7 +18,9 @@ Response Success :
 200 : User connected, return a json token
 ```
 ```json
-        test
+    {
+        "access_token": "..."
+    }
 ```
 
 Response Error :
