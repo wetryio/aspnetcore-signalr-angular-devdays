@@ -16,9 +16,12 @@ Body Params :
 Response :
 ```
 200 : User connected, return a json token
-    ```json
+```
+```json
         test
-    ```
+```
+
+```    
 400 : Username is empty or validation failed
 409 : User with this username already exist
 ```
