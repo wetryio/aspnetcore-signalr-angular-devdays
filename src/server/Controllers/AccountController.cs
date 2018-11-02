@@ -22,7 +22,7 @@ namespace Server.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] string value)
+        public IActionResult Post([FromBody] string username)
         {
             return Ok();
         }
