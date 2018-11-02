@@ -13,7 +13,7 @@ Body Params :
     public IActionResult Post([FromBody] string username)
 ```
 
-Response :
+Response Success :
 ```
 200 : User connected, return a json token
 ```
@@ -21,6 +21,7 @@ Response :
         test
 ```
 
+Response Error :
 ```    
 400 : Username is empty or validation failed
 409 : User with this username already exist
