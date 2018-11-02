@@ -5,7 +5,7 @@ A sample webchat application in ASP.NET Core with SignalR and Angular
 ### Account Controller
 
 #### Connect new User
-POST /api/v1/account
+POST /api/v1/account  
 Body Params : 
 ```csharp
     public IActionResult Post([FromBody] string value)
