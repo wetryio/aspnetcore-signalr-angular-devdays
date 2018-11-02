@@ -26,9 +26,23 @@ Response Success :
 Response Error :
 ```    
 400 : Username is empty or validation failed
-409 : User with this username already exist
+```
+```json
+    {
+        "errorCode": 1,
+        "message": "..."
+    }
 ```
 
+```
+409 : User with this username already exist
+```
+```json
+    {
+        "errorCode": 1,
+        "message": "..."
+    }
+```
 
 #### Get list of connected users
 
