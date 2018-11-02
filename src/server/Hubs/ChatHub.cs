@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Caching.Memory;
@@ -50,13 +51,23 @@ namespace Server.Hubs
         public override async Task OnConnectedAsync()
         {
             await base.OnConnectedAsync();
-            await AddUserToCache(new ApplicationUser("", Guid.NewGuid(), Context.ConnectionId));
+            Guid userId = Guid.Parse(this.Context.User.Claims.FirstOrDefault(f => f.Type == "uniqueId").Value);
+            UpdateUserCache(userId);
             await Groups.AddToGroupAsync(Context.ConnectionId, "SignalR Users");
             await Clients.Caller.SendAsync("UserList", _users);
         }
 
         private async Task AddUserToCache(ApplicationUser user)
         {
+        }
+
+        private void UpdateUserCache(Guid userId)
+        {
+            ApplicationUser appUser = _cache.GetOrCreate(USERS_CACHE_KEY, 
+                        (e) => new List<ApplicationUser>()).FirstOrDefault(f => f.UserId == userId);
+
+            
+                        
         }
 
         public override async Task OnDisconnectedAsync(Exception exception)
