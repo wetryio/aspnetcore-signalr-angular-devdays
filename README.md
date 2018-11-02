@@ -39,7 +39,11 @@ Response Error :
 
 GET /api/v1/account
 
-Response :
+```csharp
+    public IActionResult Get()
+```
+
+Response Success :
 ```
 200 : User connected
 ```
@@ -53,3 +57,18 @@ Response :
         ]
     }
 ```
+
+Response Error :
+```    
+401 : Unauthorized, please connect first and use access token
+```
+```json
+    {
+        "errorCode": 1,
+        "message": "..."
+    }
+```
+
+
+## Hub
+### Chat Hub
