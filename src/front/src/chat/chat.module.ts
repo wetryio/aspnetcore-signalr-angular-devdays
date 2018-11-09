@@ -3,22 +3,27 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
+import { MobxAngularModule } from 'mobx-angular';
+
 import { ChatRoutingModule } from './chat-routing.module';
 import { services } from './services';
 import { components } from './components';
+import { stores } from './stores';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     HttpClientModule,
-    ChatRoutingModule
+    ChatRoutingModule,
+    MobxAngularModule
   ],
   declarations: [
     ...components
   ],
   providers: [
-    ...services
+    ...services,
+    ...stores
   ]
 })
 export class ChatModule { }

@@ -14,6 +14,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   public userName: string;
   public users: User[];
+  public currentUser: User;
 
   constructor(
     private chatService: ChatService,
@@ -23,10 +24,16 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     // #region to code quicker
-    if (localStorage.getItem(loginTokenKey)) {
-      this.startChat();
-      this.getUsers();
-    }
+    // if (localStorage.getItem(loginTokenKey)) {
+    //   this.startChat();
+    //   this.getUsers();
+    // }
+    setTimeout(() => {
+      this.currentUser = { userId: '12', username: 'Bob' };
+    }, 1000);
+    setTimeout(() => {
+      this.currentUser = { userId: '11', username: 'Bobii' };
+    }, 2000);
     // #endregion
   }
 

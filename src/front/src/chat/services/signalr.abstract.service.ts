@@ -30,8 +30,9 @@ export abstract class SignalRAbstractService {
   }
 
   protected stop() {
-    if (this.connection && this.connected) {
+    if (this.connection/* && this.connected*/) {
       this.connection.stop();
+      this.connection = null;
     } else {
       console.warn('not connected yet');
     }

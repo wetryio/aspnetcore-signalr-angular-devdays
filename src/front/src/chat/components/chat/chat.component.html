@@ -12,3 +12,5 @@
 <ul>
   <li *ngFor="let user of users" (click)="openChat(user)">{{ user.username }}</li>
 </ul>
+
+<app-chat-box [user]="currentUser"></app-chat-box>

@@ -1,0 +1,11 @@
+<p>
+  chat-box works!
+</p>
+
+{{ user | json }}
+
+<div *mobxAutorun>
+  <div *ngIf="messageStore.currentChat">
+    {{ messageStore.currentChat | json }}
+  </div>
+</div>
