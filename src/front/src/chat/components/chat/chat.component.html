@@ -1,5 +1,14 @@
-<p>
-  chat works!
-</p>
 
-<button type="button" (click)="start()">Start</button>
+<h2>Connection</h2>
+
+<form (ngSubmit)="start()">
+  <input type="text" #userNameInput name="userName" id="userName" [(ngModel)]="userName" required />
+  <p *ngIf="userNameInput.error?.required">Enter your user name</p>
+  <button type="submit">Start</button>
+</form>
+
+<h2>Users</h2>
+
+<ul>
+  <li *ngFor="let user of users" (click)="openChat(user)">{{ user.username }}</li>
+</ul>

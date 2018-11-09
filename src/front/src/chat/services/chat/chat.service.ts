@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
-import { SignalRAbstractService } from '../signalr.abstract.service';
+import { SignalRCoreService } from '../signalr.core.service';
 
 @Injectable()
-export class ChatService extends SignalRAbstractService {
+export class ChatService extends SignalRCoreService {
 
   private _messageReceiver = new Subject<string>();
   public messageReceiver = this._messageReceiver.asObservable();
@@ -13,7 +13,9 @@ export class ChatService extends SignalRAbstractService {
   protected url = '/chat';
   protected methods: {[key: string]: (...args: any[]) => void} = {
     'Send': (data) => { console.log('Send', data); },
-    'Receive': data => this.receive(data)
+    'Receive': data => this.receive(data),
+    'logout': () => { console.log('logout'); },
+    'updateUserList': () => { console.log('updateUserList'); }
   };
 
   constructor() {
@@ -31,6 +33,10 @@ export class ChatService extends SignalRAbstractService {
   private receive(data) {
     console.log('reveive', data);
     this._messageReceiver.next(data);
+  }
+
+  public sentMessage(receiverId: string, message: string): void {
+    this.send('', {});
   }
 
 }

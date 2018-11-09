@@ -1,4 +1,4 @@
-import { from, of } from 'rxjs';
+import { from, of, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
 import { HubConnectionBuilder, HubConnection } from '@aspnet/signalr';
@@ -8,10 +8,13 @@ export abstract class SignalRAbstractService {
   private connection: HubConnection;
   private connected: boolean;
 
+  protected baseUrl: string;
   protected url: string;
   protected methods: {[key: string]: (...args: any[]) => void};
 
   constructor() {}
+
+  protected abstract get loginToken(): string;
 
   protected start() {
     if (!this.connected) {
@@ -35,9 +38,10 @@ export abstract class SignalRAbstractService {
   }
 
   private init() {
+    // https://docs.microsoft.com/en-us/aspnet/core/signalr/authn-and-authz?view=aspnetcore-2.1
     if (!this.connection) {
       this.connection = new HubConnectionBuilder()
-        .withUrl(this.url)
+        .withUrl(`${this.baseUrl}${this.url}`, { accessTokenFactory: () => this.loginToken })
         .build();
       this.registerMethods();
     }
@@ -50,6 +54,10 @@ export abstract class SignalRAbstractService {
         this.connection.on(key, this.methods[key]);
       }
     }
+  }
+
+  public send(methodName: string, message: any): Observable<any> {
+    return from(this.connection.send(methodName, message));
   }
 
 }
