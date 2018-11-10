@@ -1,16 +1,15 @@
-import { from, of, Observable } from 'rxjs';
-import { tap, retry, timeout } from 'rxjs/operators';
+import { from, Observable, BehaviorSubject } from 'rxjs';
 
 import { HubConnectionBuilder, HubConnection } from '@aspnet/signalr';
 
-export abstract class SignalRAbstractService {
+export abstract class SignalRAbstractService<T extends SignalrMethods> {
 
   private connection: HubConnection;
-  private connected: boolean;
+  public connected = new BehaviorSubject<boolean>(false);
 
   protected baseUrl: string;
   protected url: string;
-  protected methods: {[key: string]: (...args: any[]) => void};
+  protected methods: T;
 
   constructor() {}
 
@@ -18,15 +17,15 @@ export abstract class SignalRAbstractService {
 
   protected start() {
     return new Observable((observer) => {
-      if (!this.connected) {
+      if (!this.connected.getValue()) {
         this.init();
         from(this.connection.start()).subscribe(
           () => {
-            this.connected = true;
+            this.connected.next(true);
             observer.next(true);
           },
           () => {
-            this.connected = false;
+            this.connected.next(false);
             observer.error(false);
           },
           () => observer.complete()
@@ -40,7 +39,7 @@ export abstract class SignalRAbstractService {
   }
 
   protected stop() {
-    if (this.connection/* && this.connected*/) {
+    if (this.connection/* && this.connected.getVaule()*/) {
       this.connection.stop();
       this.connection = null;
     } else {
@@ -59,7 +58,7 @@ export abstract class SignalRAbstractService {
   }
 
   private registerMethods() {
-    this.connection.onclose(() => this.connected = false);
+    this.connection.onclose(() => this.connected.next(false));
     for (const key in this.methods) {
       if (key) {
         this.connection.on(key, this.methods[key]);
@@ -72,3 +71,9 @@ export abstract class SignalRAbstractService {
   }
 
 }
+
+export interface SignalrMethods {
+  [key: string]: SignalrMethod;
+}
+
+export type SignalrMethod = (...args: any[]) => void;

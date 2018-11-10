@@ -1,9 +1,9 @@
-import { SignalRAbstractService } from './signalr.abstract.service';
+import { SignalRAbstractService, SignalrMethods } from './signalr.abstract.service';
 import { environment } from '../../environments/environment';
 
 export const loginTokenKey = 'devDaysToken';
 
-export abstract class SignalRCoreService extends SignalRAbstractService {
+export abstract class SignalRCoreService<T extends SignalrMethods> extends SignalRAbstractService<T> {
 
     protected baseUrl = environment.baseHubUrl;
 

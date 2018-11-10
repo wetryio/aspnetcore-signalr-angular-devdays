@@ -1,11 +1,40 @@
-<p>
-  chat-box works!
-</p>
+<div class="chat" *mobxAutorun>
 
-{{ user | json }}
-
-<div *mobxAutorun>
-  <div *ngIf="messageStore.currentChat">
-    {{ messageStore.currentChat | json }}
-  </div>
-</div>
+  <div class="chat-header clearfix" *ngIf="messageStore.currentChat">
+    <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01_green.jpg" alt="avatar" />
+    <div class="chat-about">
+      <div class="chat-with">Chat with {{ messageStore.currentChat.user.username }}</div>
+      <div class="chat-num-messages">
+        {{ (messageStore.connected | async) ? 'Connected' :'Connecting...' }} 
+      </div>
+    </div>
+    <i class="fa fa-star"></i>
+  </div> <!-- end chat-header -->
+  
+  <div class="chat-history">
+    <ul *ngIf="messageStore.currentChat">
+      <li class="clearfix" *ngFor="let message of messageStore.currentChat.messages">
+        <div class="message-data align-right" *ngIf="message.mine">
+            <span class="message-data-time" >10:10 AM, Today</span> &nbsp; &nbsp;
+            <span class="message-data-name" >Your</span><i class="fa fa-circle me"></i>
+        </div>
+        <div class="message-data" *ngIf="!message.mine">
+            <span class="message-data-name" >Their</span><i class="fa fa-circle online"></i> &nbsp; &nbsp;
+            <span class="message-data-time" >10:10 AM, Today</span>
+        </div>
+        <div class="message" [ngClass]="{'my-message': !message.mine, 'other-message float-right': message.mine}">
+          {{ message.content }}
+        </div>
+      </li>
+    </ul>
+  </div> <!-- end chat-history -->
+  
+  <div class="chat-message clearfix">
+    <textarea name="message-to-send" id="message-to-send" placeholder ="Type your message" rows="3" [disabled]="!(messageStore.connected | async)" [(ngModel)]="messageToSend"></textarea>    
+    <i class="fa fa-file-o"></i> &nbsp;&nbsp;&nbsp;
+    <i class="fa fa-file-image-o"></i>
+    <button [disabled]="!(messageStore.connected | async)" (click)="send()">Send</button>
+  </div> <!-- end chat-message -->
+  
+</div> <!-- end chat -->
+  

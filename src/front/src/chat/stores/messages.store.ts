@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { observable, action, computed } from 'mobx-angular';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 
 import { Chat, User, Message } from '../models';
 import { ChatService } from '../services';
@@ -17,12 +17,12 @@ export class MessageStore {
         return this._currentChat;
     }
 
+    public get connected(): Observable<boolean> {
+        return this.chatService.connected;
+    }
+
     constructor(private chatService: ChatService) {
         this.init();
-        setTimeout(() => {
-            this.addMessage({ userId: '', content: 'test' });
-        }, 3000);
-
     }
 
     @action private init() {
@@ -38,14 +38,13 @@ export class MessageStore {
                 ...this._conversations,
                 [user.userId]: chat
             };
-            // this._conversations[user.userId]
         }
         this._currentChat = chat;
         this.start();
-    }
-
-    @action public addMessage(message: Message) {
-        this.currentChat.messages = [...this.currentChat.messages, message];
+        // TODO: remove next lines
+        // setTimeout(() => {
+        //     this.addMessage({ userId: '', content: 'test' });
+        // }, 3000);
     }
 
     private start() {
@@ -60,6 +59,13 @@ export class MessageStore {
         }
         this.chatService.stopListening();
         this._currentChat = null;
+    }
+
+    @action public addMessage(message: Message) {
+        this.currentChat.messages = [...this.currentChat.messages, message];
+        if (message.mine) {
+            this.chatService.sendMessage(this.currentChat.user.userId, message.content);
+        }
     }
 
 }

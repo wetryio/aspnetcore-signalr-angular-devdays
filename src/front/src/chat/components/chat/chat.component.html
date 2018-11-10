@@ -7,10 +7,7 @@
   <button type="submit">Start</button>
 </form>
 
-<h2>Users</h2>
 
-<ul>
-  <li *ngFor="let user of users" (click)="openChat(user)">{{ user.username }}</li>
-</ul>
+<app-user-list [users]="users" (choiceChange)="openChat($event)"></app-user-list>
 
-<app-chat-box [user]="currentUser"></app-chat-box>
+<app-chat-box [user]="currentUser" *ngIf="currentUser"></app-chat-box>

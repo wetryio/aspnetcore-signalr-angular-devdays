@@ -13,6 +13,8 @@ export class ChatBoxComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input() user: User;
 
+  public messageToSend: string;
+
   constructor(private messageStore: MessageStore) { }
 
   ngOnInit() {
@@ -30,6 +32,17 @@ export class ChatBoxComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnDestroy() {
     this.messageStore.stop();
+  }
+
+  public send() {
+    if (this.messageToSend) {
+      this.messageStore.addMessage({
+        content: this.messageToSend,
+        userId: '',
+        mine: true
+      });
+    }
+    this.messageToSend = '';
   }
 
 }

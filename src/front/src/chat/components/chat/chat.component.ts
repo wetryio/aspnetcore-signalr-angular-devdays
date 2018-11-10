@@ -29,7 +29,11 @@ export class ChatComponent implements OnInit, OnDestroy {
     //   this.getUsers();
     // }
     setTimeout(() => {
-      this.currentUser = { userId: '12', username: 'Bob' };
+      this.users = [
+        { userId: '12', username: 'Bob' },
+        { userId: '11', username: 'Bobiii' },
+      ];
+      // this.currentUser = { userId: '12', username: 'Bob' };
     }, 1000);
     // setTimeout(() => {
     //   this.currentUser = { userId: '11', username: 'Bobii' };
@@ -51,7 +55,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   public openChat(user: User) {
-    console.log('open', user);
+    this.currentUser = user;
   }
 
   private login(): Observable<any> {
