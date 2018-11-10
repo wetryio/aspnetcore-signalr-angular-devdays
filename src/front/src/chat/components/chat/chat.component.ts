@@ -31,14 +31,14 @@ export class ChatComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.currentUser = { userId: '12', username: 'Bob' };
     }, 1000);
-    setTimeout(() => {
-      this.currentUser = { userId: '11', username: 'Bobii' };
-    }, 2000);
+    // setTimeout(() => {
+    //   this.currentUser = { userId: '11', username: 'Bobii' };
+    // }, 2000);
     // #endregion
   }
 
   ngOnDestroy() {
-    this.chatService.stopListening();
+    // this.chatService.stopListening();
   }
 
   public start() {
@@ -59,9 +59,10 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   private startChat() {
-    this.chatService.listen().subscribe(data => {
-      console.log('recreived', data);
-    });
+    // const subscription = this.chatService.listen().subscribe(data => {
+    //   console.log('recreived', data);
+    // });
+    // subscription.unsubscribe();
   }
 
   private getUsers() {

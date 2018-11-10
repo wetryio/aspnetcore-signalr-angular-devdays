@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Subject, Observable } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { Subject, Observable, timer } from 'rxjs';
+import { switchMap, retry, tap, retryWhen, delayWhen } from 'rxjs/operators';
 
 import { SignalRCoreService } from '../signalr.core.service';
 
@@ -23,7 +23,12 @@ export class ChatService extends SignalRCoreService {
   }
 
   public listen(): Observable<string> {
-    return this.start().pipe(switchMap(() => this.messageReceiver));
+    return this.start().pipe(
+      retryWhen(errors => {
+        return errors.pipe(delayWhen(val => timer(3000)));
+      }),
+      switchMap(() => this.messageReceiver)
+    );
   }
 
   public stopListening(): void {

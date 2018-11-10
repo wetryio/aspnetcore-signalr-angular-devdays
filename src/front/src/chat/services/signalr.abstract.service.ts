@@ -1,5 +1,5 @@
 import { from, of, Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { tap, retry, timeout } from 'rxjs/operators';
 
 import { HubConnectionBuilder, HubConnection } from '@aspnet/signalr';
 
@@ -17,16 +17,26 @@ export abstract class SignalRAbstractService {
   protected abstract get loginToken(): string;
 
   protected start() {
-    if (!this.connected) {
-      this.init();
-      return from(this.connection.start()).pipe(tap(
-        () => this.connected = true,
-        () => this.connected = false
-      ));
-    } else {
-      console.warn('already connected');
-      return of(null);
-    }
+    return new Observable((observer) => {
+      if (!this.connected) {
+        this.init();
+        from(this.connection.start()).subscribe(
+          () => {
+            this.connected = true;
+            observer.next(true);
+          },
+          () => {
+            this.connected = false;
+            observer.error(false);
+          },
+          () => observer.complete()
+        );
+      } else {
+        console.warn('already connected');
+        observer.next(false);
+        observer.complete();
+      }
+    });
   }
 
   protected stop() {

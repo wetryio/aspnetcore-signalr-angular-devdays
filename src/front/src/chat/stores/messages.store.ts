@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
 import { observable, action, computed } from 'mobx-angular';
+import { Subscription } from 'rxjs';
 
 import { Chat, User, Message } from '../models';
 import { ChatService } from '../services';
 
 @Injectable()
 export class MessageStore {
+
+    private connectionSubscription: Subscription;
 
     @observable private _conversations: {[key: string]: Chat};
     @observable private _currentChat: Chat;
@@ -46,12 +49,15 @@ export class MessageStore {
     }
 
     private start() {
-        this.chatService.listen().subscribe((message) => {
+        this.connectionSubscription = this.chatService.listen().subscribe((message) => {
             this.addMessage({ userId: '', content: message });
         });
     }
 
     @action public stop() {
+        if (this.connectionSubscription) {
+            this.connectionSubscription.unsubscribe();
+        }
         this.chatService.stopListening();
         this._currentChat = null;
     }

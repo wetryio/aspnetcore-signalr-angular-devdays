@@ -16,6 +16,9 @@ export class ChatBoxComponent implements OnInit, OnChanges, OnDestroy {
   constructor(private messageStore: MessageStore) { }
 
   ngOnInit() {
+    // setTimeout(() => {
+    //   this.messageStore.stop();
+    // }, 10000);
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -26,7 +29,7 @@ export class ChatBoxComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnDestroy() {
-    // this.messageStore
+    this.messageStore.stop();
   }
 
 }
