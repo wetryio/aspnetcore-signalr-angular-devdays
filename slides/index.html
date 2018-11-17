@@ -1,0 +1,120 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>reveal.js</title>
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/black.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section>
+					<section data-transition="slide-in fade-out">
+						<h1>SignalR</h1>
+						<h4>Du temps réel entre navigateur et serveur</h4>
+						<p>
+							<small>Présenté par <a href="">Patrick Grassels</a> et <a href="">David Gilson</a></small>
+						</p>
+						<aside class="notes">
+						</aside>
+					</section>
+					<section data-background-video="videos/intro.mp4">
+					</section>
+				</section>
+				<section>
+					<h2>Contenu</h2>
+					<section>
+						<h3>Introduction</h3>
+						<ol>
+							<li>Quesako ?</li>
+							<li>Avantages</li>
+							<li>Points d'attention</li>
+						</ol>
+					</section>
+					<section>
+						<h3>Côté serveur</h3>
+						<ol>
+							<li>Sujet 1</li>
+							<li>Sujet 2</li>
+						</ol>
+					</section>
+					<section>
+						<h3>Côté client</h3>
+						<ol>
+							<li>Choix de la librairie</li>
+							<li>Avantages utilisation store</li>
+						</ol>
+					</section>
+				</section>
+				<section>
+					<section>
+						<h2>Côté client</h2>
+					</section>
+					<section>
+						<h3>Choix de la librairie</h3>
+						<ol>
+							<li class="fragment fade-in" data-fragment-index="1">
+								<p class="fragment strike" data-fragment-index="3">ngx-signalr</p>
+								<img class="fragment fade-in" data-fragment-index="2" src="./images/ngx-signalr-jquery.png" />
+							</li>
+							<li class="fragment fade-in" data-fragment-index="4">
+								<p class="fragment strike" data-fragment-index="6">signalr</p>
+								<img class="fragment fade-in" data-fragment-index="5" src="./images/signalr-jquery.png" />
+							</li>
+							<li class="fragment fade-in" data-fragment-index="7">
+								<p>@aspnet/signalr</p>
+							</li>
+						</ol>
+					</section>
+					<section>
+						<h3>@aspnet/signalr</h3>
+						<blockquote>&ldquo;JavaScript and TypeScript clients for SignalR for ASP.NET Core&rdquo;</blockquote>
+					</section>
+					<section>
+						<h3>Pourquoi un store ?</h3>
+						<div>
+							<img class="fragment fade-in" style="height: 500px; background-color: white;" src="./images/redux.gif" />
+							<img class="fragment fade-in" style="height: 500px; background-color: white; position: absolute; left: 143px;" src="./images/redux-signalr.png" />
+						</div>
+						<aside class="notes">
+							SignalR est son propre déclancheur.
+						</aside>
+					</section>
+				</section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info about config & dependencies:
+			// - https://github.com/hakimel/reveal.js#configuration
+			// - https://github.com/hakimel/reveal.js#dependencies
+			Reveal.initialize({
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+				]
+			});
+		</script>
+	</body>
+</html>

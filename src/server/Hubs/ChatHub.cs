@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Caching.Memory;
@@ -12,9 +13,12 @@ namespace Server.Hubs
     {
         private readonly IMemoryCache _cache;
         private readonly MemoryCacheEntryOptions _cacheEntryOptions;
-        private readonly IList<ApplicationUser> _users;
+        private IList<ApplicationUser> _users;
 
         private const string USERS_CACHE_KEY = "users";
+
+        private const string USERS_MESSAGES_CACHE_KEY = "messages";
+
 
         public ChatHub(IMemoryCache memoryCache)
         {
@@ -31,32 +35,30 @@ namespace Server.Hubs
             (state as ChatHub).Clients.Client(key as string).SendAsync("logout");
         }
 
-        public async Task SendMessage(string user, string message)
-        {
-            await Clients.All.SendAsync("ReceiveMessage", user, message);
-        }
-
-        public Task SendMessageToCaller(string message)
-        {
-            return Clients.Caller.SendAsync("ReceiveMessage", message);
-        }
-
-        public Task SendMessageToGroups(string message)
-        {
-            List<string> groups = new List<string>() { "SignalR Users" };
-            return Clients.Groups(groups).SendAsync("ReceiveMessage", message);
+        public async Task SendMessageToUserAsync(Guid userId, string message){
+            string connectionId = _users.FirstOrDefault(f => f.UserId == userId)?.ConnectionId;
+            Guid? userIdSender = _users.FirstOrDefault(f => f.ConnectionId == Context.ConnectionId)?.UserId;
+            await Clients.Client(connectionId).SendAsync("receive", userIdSender, message);
         }
 
         public override async Task OnConnectedAsync()
         {
             await base.OnConnectedAsync();
-            await AddUserToCache(new ApplicationUser("", Guid.NewGuid(), Context.ConnectionId));
+            Guid userId = Guid.Parse(this.Context.User.Claims.FirstOrDefault(f => f.Type == "uniqueId").Value);
+            UpdateUserCache(userId);
             await Groups.AddToGroupAsync(Context.ConnectionId, "SignalR Users");
-            await Clients.Caller.SendAsync("UserList", _users);
+            await Clients.AllExcept(Context.ConnectionId).SendAsync("updateUserList", _users);
         }
 
         private async Task AddUserToCache(ApplicationUser user)
         {
+        }
+
+        private void UpdateUserCache(Guid userId)
+        {
+            ApplicationUser appUser = _users.FirstOrDefault(f => f.UserId == userId);
+            appUser.ConnectionId = Context.ConnectionId;
+            _cache.Set(USERS_CACHE_KEY, _users);
         }
 
         public override async Task OnDisconnectedAsync(Exception exception)
