@@ -28,6 +28,7 @@ namespace Server
         public IConfiguration Configuration { get; }
 
         private const string CHAT_ROUTING = "chat";
+        private const string QUOTE_ROUTING = "quote";
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -114,6 +115,7 @@ namespace Server
             app.UseSignalR(route =>
             {
                 route.MapHub<ChatHub>($"/{CHAT_ROUTING}");
+                route.MapHub<QuoteHub>($"/{QUOTE_ROUTING}");
             });
         }
     }

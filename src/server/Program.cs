@@ -21,10 +21,6 @@ namespace Server
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
                 .UseUrls("https://0.0.0.0:5001", "http://0.0.0.0:5000")
-                .UseKestrel(options =>
-                {
-                    options.Limits.MaxConcurrentConnections = 500;
-                    options.Limits.MaxConcurrentUpgradedConnections = 500;
-                });
+                .UseKestrel();
     }
 }

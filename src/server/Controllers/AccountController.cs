@@ -36,7 +36,7 @@ namespace Server.Controllers
         {
             _cache = memoryCache;
             _cacheEntryOptions = new MemoryCacheEntryOptions()
-                .SetAbsoluteExpiration(TimeSpan.FromSeconds(10))
+                .SetAbsoluteExpiration(TimeSpan.FromMinutes(10))
                 .RegisterPostEvictionCallback(callback: EvictionCallback, state: this);
 
             _appSettings = appSettings.Value;
@@ -46,19 +46,19 @@ namespace Server.Controllers
 
         private static void EvictionCallback(object key, object value, EvictionReason reason, object state)
         {
-            (state as AccountController)._cache.Remove(key);
+            // (state as AccountController)._cache.Remove(key);
 
-                 List<ApplicationUser> users = (state as AccountController)._cache.GetOrCreate(USERS_CACHE_KEY, 
-                        (e) => new List<ApplicationUser>()).Where(a => a.UserId != ((ApplicationUser)value).UserId).ToList();
+            //      List<ApplicationUser> users = (state as AccountController)._cache.GetOrCreate(USERS_CACHE_KEY, 
+            //             (e) => new List<ApplicationUser>()).Where(a => a.UserId != ((ApplicationUser)value).UserId).ToList();
 
-            (state as AccountController)._cache.Set(USERS_CACHE_KEY, users);
+            // (state as AccountController)._cache.Set(USERS_CACHE_KEY, users);
 
-            (state as AccountController)._hubContext
-                                .Clients
-                                .Client(((ApplicationUser)value).ConnectionId).SendAsync("logout");
+            // (state as AccountController)._hubContext
+            //                     .Clients
+            //                     .Client(((ApplicationUser)value).ConnectionId).SendAsync("logout");
 
-            (state as AccountController)._hubContext
-                                .Clients.All.SendAsync("updateUserList");
+            // (state as AccountController)._hubContext
+            //                     .Clients.All.SendAsync("updateUserList");
                                              
         }
 
