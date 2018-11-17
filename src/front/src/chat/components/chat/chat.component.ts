@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { ChatService, AuthService, ChatUtilsService } from '../../services';
+import { ChatService, AuthService, ChatUtilsService, QuoteService } from '../../services';
 import { User } from '../../models/user.model';
 import { loginTokenKey } from '../../services/signalr.core.service';
 
@@ -15,30 +15,34 @@ export class ChatComponent implements OnInit, OnDestroy {
   public userName: string;
   public users: User[];
   public currentUser: User;
+  public quote: string;
 
   constructor(
     private chatService: ChatService,
     private authService: AuthService,
-    private chatUtilsService: ChatUtilsService
+    private chatUtilsService: ChatUtilsService,
+    private quoteService: QuoteService
     ) { }
 
   ngOnInit() {
     // #region to code quicker
-    // if (localStorage.getItem(loginTokenKey)) {
-    //   this.startChat();
-    //   this.getUsers();
-    // }
-    setTimeout(() => {
-      this.users = [
-        { userId: '12', username: 'Bob' },
-        { userId: '11', username: 'Bobiii' },
-      ];
-      // this.currentUser = { userId: '12', username: 'Bob' };
-    }, 1000);
+    if (localStorage.getItem(loginTokenKey)) {
+      this.startChat();
+      this.getUsers();
+    }
+    // setTimeout(() => {
+    //   this.users = [
+    //     { userId: '12', username: 'Bob' },
+    //     { userId: '11', username: 'Bobiii' },
+    //   ];
+    //   // this.currentUser = { userId: '12', username: 'Bob' };
+    // }, 1000);
     // setTimeout(() => {
     //   this.currentUser = { userId: '11', username: 'Bobii' };
     // }, 2000);
     // #endregion
+
+    this.quoteService.run().subscribe(quote => this.quote = quote);
   }
 
   ngOnDestroy() {
@@ -66,7 +70,11 @@ export class ChatComponent implements OnInit, OnDestroy {
     // const subscription = this.chatService.listen().subscribe(data => {
     //   console.log('recreived', data);
     // });
+    this.chatService.run().subscribe();
     // subscription.unsubscribe();
+    this.chatService.refreshList.subscribe(() => {
+      this.getUsers();
+    });
   }
 
   private getUsers() {

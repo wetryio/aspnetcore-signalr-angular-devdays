@@ -1,6 +1,6 @@
 import { from, Observable, BehaviorSubject } from 'rxjs';
 
-import { HubConnectionBuilder, HubConnection } from '@aspnet/signalr';
+import { HubConnectionBuilder, HubConnection, HttpTransportType } from '@aspnet/signalr';
 
 export abstract class SignalRAbstractService<T extends SignalrMethods> {
 
@@ -10,6 +10,7 @@ export abstract class SignalRAbstractService<T extends SignalrMethods> {
   protected baseUrl: string;
   protected url: string;
   protected methods: T;
+  protected transport: HttpTransportType;
 
   constructor() {}
 
@@ -51,14 +52,17 @@ export abstract class SignalRAbstractService<T extends SignalrMethods> {
     // https://docs.microsoft.com/en-us/aspnet/core/signalr/authn-and-authz?view=aspnetcore-2.1
     if (!this.connection) {
       this.connection = new HubConnectionBuilder()
-        .withUrl(`${this.baseUrl}${this.url}`, { accessTokenFactory: () => this.loginToken })
+        .withUrl(`${this.baseUrl}${this.url}`, {
+          accessTokenFactory: () => this.loginToken,
+          ... ( this.transport ? { transport: this.transport } : {})
+        })
         .build();
       this.registerMethods();
     }
   }
 
   private registerMethods() {
-    this.connection.onclose(() => this.connected.next(false));
+    this.connection.onclose((error) => this.onClose(error));
     for (const key in this.methods) {
       if (key) {
         this.connection.on(key, this.methods[key]);
@@ -66,8 +70,17 @@ export abstract class SignalRAbstractService<T extends SignalrMethods> {
     }
   }
 
-  public send(methodName: string, message: any): Observable<any> {
-    return from(this.connection.send(methodName, message));
+  private onClose(error: Error) {
+    this.connected.next(false);
+    // Will receive error if connection error but undefined if stop function is called
+    console.log('onClose', error);
+    if (error) {
+      // TODO: try reconnection here
+    }
+  }
+
+  public send(methodName: string, ...datas: any[]): Observable<any> {
+    return from(this.connection.send(methodName, ...datas));
   }
 
 }

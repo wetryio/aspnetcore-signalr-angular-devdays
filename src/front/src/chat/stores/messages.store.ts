@@ -30,7 +30,7 @@ export class MessageStore {
     }
 
     @action public switchConversation(user: User) {
-        this.stop();
+        // this.stop();
         let chat = this._conversations[user.userId];
         if (!chat) {
             chat = new Chat(user);
@@ -49,7 +49,7 @@ export class MessageStore {
 
     private start() {
         this.connectionSubscription = this.chatService.listen().subscribe((message) => {
-            this.addMessage({ userId: '', content: message });
+            this.addMessage(message);
         });
     }
 
