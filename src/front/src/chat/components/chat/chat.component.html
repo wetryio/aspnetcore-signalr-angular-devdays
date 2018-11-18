@@ -1,12 +1,10 @@
 
-<h2>Connection : {{ quote }}</h2>
+<!-- <h2>Connection : {{ quote }}</h2> -->
 
-<form (ngSubmit)="start()">
-  <input type="text" #userNameInput name="userName" id="userName" [(ngModel)]="userName" required />
-  <p *ngIf="userNameInput.error?.required">Enter your user name</p>
-  <button type="submit">Start</button>
-</form>
+<div class="row no-gutters h-100">
 
-<app-user-list [users]="messageStore.users" (choiceChange)="openChat($event)"></app-user-list>
+  <app-user-list class="col-4 h-100" [users]="messageStore.users" (choiceChange)="openChat($event)"></app-user-list>
 
-<app-chat-box [user]="currentUser" *ngIf="currentUser"></app-chat-box>
+  <app-chat-box class="col-8 h-100" [user]="currentUser"></app-chat-box>
+
+</div>

@@ -1,6 +1,6 @@
 import { Injectable, Injector } from '@angular/core';
-import { SignalrMethods, SignalrMethod } from '../signalr.abstract.service';
-import { SignalRCoreService } from '../signalr.core.service';
+import { SignalrMethods, SignalrMethod } from '../../../core/services/abstracts/signalr/signalr.abstract.service';
+import { SignalRCoreService } from '../../../core/services/abstracts/signalr/signalr.core.service';
 import { Observable, Subject } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 

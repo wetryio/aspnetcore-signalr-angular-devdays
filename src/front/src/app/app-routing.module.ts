@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { AuthComponent } from '../core/components';
+import { AuthGuard } from '../core/guards';
 
 const routes: Routes = [
   {
@@ -8,7 +10,16 @@ const routes: Routes = [
     redirectTo: 'chat'
   }, {
     path: 'chat',
-    loadChildren: '../chat/chat.module#ChatModule'
+    loadChildren: '../chat/chat.module#ChatModule',
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'auth',
+    component: AuthComponent
+  },
+  {
+    path: '**',
+    redirectTo: '/chat'
   }
 ];
 

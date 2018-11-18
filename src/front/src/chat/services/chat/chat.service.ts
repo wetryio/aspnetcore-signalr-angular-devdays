@@ -1,9 +1,10 @@
 import { Injectable, EventEmitter } from '@angular/core';
+import { Router } from '@angular/router';
 import { Subject, Observable, timer } from 'rxjs';
 import { switchMap, retryWhen, delayWhen } from 'rxjs/operators';
 
-import { SignalRCoreService } from '../signalr.core.service';
-import { SignalrMethod, SignalrMethods } from '../signalr.abstract.service';
+import { SignalRCoreService } from '../../../core/services/abstracts/signalr/signalr.core.service';
+import { SignalrMethod, SignalrMethods } from '../../../core/services/abstracts/signalr/signalr.abstract.service';
 import { Message } from '../../../chat/models';
 
 interface ChatMethods extends SignalrMethods {
@@ -38,19 +39,19 @@ export class ChatService extends SignalRCoreService<ChatMethods> {
     }
   };
 
-  constructor() {
+  constructor(private router: Router) {
     super();
   }
 
-  // public run(): Observable<any> {
-  //   return this.start();
-  // }
+  protected logout(): void {
+    super.logout();
+    this.router.navigate(['/auth']);
+  }
 
   public listen(): Observable<Message> {
     return this.start().pipe(
       switchMap(() => this.messageReceiver)
     );
-    // return this.messageReceiver;
   }
 
   public stopListening(): void {

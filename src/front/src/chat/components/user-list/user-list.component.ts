@@ -11,9 +11,10 @@ import { User } from 'src/chat/models';
 export class UserListComponent implements OnInit {
 
   @Input() public users: User[];
-
   @Input() public choice: User;
   @Output() private choiceChange = new EventEmitter<User>();
+
+  public userSearch: string;
 
   constructor() { }
 

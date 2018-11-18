@@ -19,6 +19,7 @@ export abstract class SignalRAbstractService<T extends SignalrMethods> {
   }
 
   protected abstract get loginToken(): string;
+  protected abstract logout(): void;
 
   protected start() {
     return new Observable((observer) => {
@@ -87,6 +88,7 @@ export abstract class SignalRAbstractService<T extends SignalrMethods> {
         this.start().subscribe();
       } else {
         // TODO: Disconnect user
+        this.logout();
       }
     }
   }

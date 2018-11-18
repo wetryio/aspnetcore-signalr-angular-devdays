@@ -1,5 +1,5 @@
 import { SignalRAbstractService, SignalrMethods } from './signalr.abstract.service';
-import { environment } from '../../environments/environment';
+import { environment } from '../../../../environments/environment';
 
 export const loginTokenKey = 'devDaysToken';
 
@@ -15,6 +15,10 @@ export abstract class SignalRCoreService<T extends SignalrMethods> extends Signa
         if (typeof localStorage !== undefined) {
             return localStorage.getItem(loginTokenKey);
         }
+    }
+
+    protected logout(): void {
+        localStorage.removeItem(loginTokenKey);
     }
 
 }

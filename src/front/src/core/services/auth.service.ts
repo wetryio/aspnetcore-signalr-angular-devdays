@@ -2,8 +2,8 @@ import { Injectable, Injector } from '@angular/core';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
-import { BaseWebService } from '../../../core/services/base-web.service';
-import { loginTokenKey } from '../signalr.core.service';
+import { BaseWebService } from './abstracts/base-web.service';
+import { loginTokenKey } from './abstracts/signalr/signalr.core.service';
 
 @Injectable()
 export class AuthService extends BaseWebService {

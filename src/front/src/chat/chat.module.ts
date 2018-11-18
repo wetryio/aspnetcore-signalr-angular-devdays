@@ -9,6 +9,7 @@ import { ChatRoutingModule } from './chat-routing.module';
 import { services } from './services';
 import { components } from './components';
 import { stores } from './stores';
+import { pipes } from './pipes';
 
 @NgModule({
   imports: [
@@ -19,7 +20,8 @@ import { stores } from './stores';
     MobxAngularModule
   ],
   declarations: [
-    ...components
+    ...components,
+    ...pipes
   ],
   providers: [
     ...services,

@@ -1,7 +1,7 @@
-<div class="chat" *mobxAutorun>
+<div class="chat h-100" *mobxAutorun>
 
   <div class="chat-header clearfix" *ngIf="messageStore.currentChat">
-    <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01_green.jpg" alt="avatar" />
+    <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01_green.jpg" alt="avatar" class="d-none d-sm-block" />
     <div class="chat-about">
       <div class="chat-with">Chat with {{ messageStore.currentChat.user.username }}</div>
       <div class="chat-num-messages">
@@ -30,10 +30,10 @@
   </div> <!-- end chat-history -->
   
   <div class="chat-message clearfix">
-    <textarea name="message-to-send" id="message-to-send" placeholder ="Type your message" rows="3" [disabled]="!(messageStore.connected | async)" [(ngModel)]="messageToSend" maxlength="1024"></textarea>    
+    <textarea name="message-to-send" id="message-to-send" placeholder ="Type your message" rows="3" [disabled]="!(messageStore.connected | async) || !messageStore.currentChat" [(ngModel)]="messageToSend" maxlength="1024"></textarea>    
     <i class="fa fa-file-o"></i> &nbsp;&nbsp;&nbsp;
     <i class="fa fa-file-image-o"></i>
-    <button [disabled]="!(messageStore.connected | async)" (click)="send()">Send</button>
+    <button [disabled]="!(messageStore.connected | async) || !messageStore.currentChat" (click)="send()">Send</button>
   </div> <!-- end chat-message -->
   
 </div> <!-- end chat -->
