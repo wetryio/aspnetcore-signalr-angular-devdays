@@ -20,6 +20,7 @@ export class QuoteService extends SignalRCoreService<ChatMethods> {
 
   protected url = '/quote';
   protected transport = HttpTransportType.LongPolling;
+  protected connectionTryDelay = 10000;
 
   protected methods: ChatMethods = {
     UpdateQuote: (quote) => {

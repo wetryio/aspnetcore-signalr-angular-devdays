@@ -1,6 +1,7 @@
-import { from, Observable, BehaviorSubject } from 'rxjs';
+import { from, Observable, BehaviorSubject, timer } from 'rxjs';
 
-import { HubConnectionBuilder, HubConnection, HttpTransportType } from '@aspnet/signalr';
+import { HubConnectionBuilder, HubConnection, HttpTransportType, HttpError } from '@aspnet/signalr';
+import { retryWhen, delayWhen } from 'rxjs/operators';
 
 export abstract class SignalRAbstractService<T extends SignalrMethods> {
 
@@ -11,8 +12,11 @@ export abstract class SignalRAbstractService<T extends SignalrMethods> {
   protected url: string;
   protected methods: T;
   protected transport: HttpTransportType;
+  protected connectionTryDelay: number;
 
-  constructor() {}
+  constructor() {
+    this.connectionTryDelay = 3000;
+  }
 
   protected abstract get loginToken(): string;
 
@@ -36,7 +40,11 @@ export abstract class SignalRAbstractService<T extends SignalrMethods> {
         observer.next(false);
         observer.complete();
       }
-    });
+    }).pipe(
+      retryWhen(errors => {
+        return errors.pipe(delayWhen(val => timer(this.connectionTryDelay)));
+      })
+    );
   }
 
   protected stop() {
@@ -75,7 +83,11 @@ export abstract class SignalRAbstractService<T extends SignalrMethods> {
     // Will receive error if connection error but undefined if stop function is called
     console.log('onClose', error);
     if (error) {
-      // TODO: try reconnection here
+      if (error instanceof HttpError || error.message.includes(' 1006 ')) {
+        this.start().subscribe();
+      } else {
+        // TODO: Disconnect user
+      }
     }
   }
 

@@ -42,18 +42,15 @@ export class ChatService extends SignalRCoreService<ChatMethods> {
     super();
   }
 
-  public run(): Observable<any> {
-    return this.start();
-  }
+  // public run(): Observable<any> {
+  //   return this.start();
+  // }
 
   public listen(): Observable<Message> {
-    // return this.start().pipe(
-    //   retryWhen(errors => {
-    //     return errors.pipe(delayWhen(val => timer(3000)));
-    //   }),
-    //   switchMap(() => this.messageReceiver)
-    // );
-    return this.messageReceiver;
+    return this.start().pipe(
+      switchMap(() => this.messageReceiver)
+    );
+    // return this.messageReceiver;
   }
 
   public stopListening(): void {

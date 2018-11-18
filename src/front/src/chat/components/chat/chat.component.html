@@ -7,7 +7,6 @@
   <button type="submit">Start</button>
 </form>
 
-
-<app-user-list [users]="users" (choiceChange)="openChat($event)"></app-user-list>
+<app-user-list [users]="messageStore.users" (choiceChange)="openChat($event)"></app-user-list>
 
 <app-chat-box [user]="currentUser" *ngIf="currentUser"></app-chat-box>

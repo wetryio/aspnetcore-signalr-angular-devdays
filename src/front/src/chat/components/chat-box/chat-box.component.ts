@@ -9,7 +9,7 @@ import { MessageStore } from '../../stores';
   styleUrls: ['./chat-box.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ChatBoxComponent implements OnInit, OnChanges, OnDestroy {
+export class ChatBoxComponent implements OnChanges {
 
   @Input() user: User;
 
@@ -17,28 +17,17 @@ export class ChatBoxComponent implements OnInit, OnChanges, OnDestroy {
 
   constructor(private messageStore: MessageStore) { }
 
-  ngOnInit() {
-    // setTimeout(() => {
-    //   this.messageStore.stop();
-    // }, 10000);
-  }
-
   ngOnChanges(changes: SimpleChanges) {
     if (changes.user && this.user) {
-      console.log('changes', this.user);
       this.messageStore.switchConversation(this.user);
     }
-  }
-
-  ngOnDestroy() {
-    this.messageStore.stop();
   }
 
   public send() {
     if (this.messageToSend) {
       this.messageStore.addMessage({
         content: this.messageToSend,
-        userId: '',
+        userId: this.messageStore.currentReceiverId,
         mine: true
       });
     }
