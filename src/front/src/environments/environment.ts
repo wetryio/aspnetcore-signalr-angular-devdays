@@ -1,5 +1,6 @@
 export const environment = {
   production: false,
-  baseApiUrl: 'https://192.168.137.170:5001/api',
-  baseHubUrl: 'https://192.168.137.170:5001',
+  baseApiUrl: 'http://localhost:5000/api',
+  baseHubUrl: 'http://localhost:5000',
+  connectionTryDelayDefault: 3000
 };

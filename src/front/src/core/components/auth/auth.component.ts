@@ -1,20 +1,33 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { AuthService } from '../../services';
+import { Observable, Subscription } from 'rxjs';
+import { AuthService, QuoteService } from '../../services';
 
 @Component({
   selector: 'app-auth',
   templateUrl: './auth.component.html',
   styleUrls: ['./auth.component.scss']
 })
-export class AuthComponent implements OnInit {
+export class AuthComponent implements OnInit, OnDestroy {
 
   public userName: string;
+  public quote: string;
+  private quoteSubscription: Subscription;
 
-  constructor(private router: Router, private authService: AuthService) { }
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    private quoteService: QuoteService
+  ) { }
 
   ngOnInit() {
+    this.quoteSubscription = this.quoteService.run().subscribe(quote => this.quote = quote);
+  }
+
+  ngOnDestroy() {
+    if (this.quoteSubscription) {
+      this.quoteSubscription.unsubscribe();
+    }
   }
 
   public start() {

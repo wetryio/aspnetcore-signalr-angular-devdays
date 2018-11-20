@@ -1,10 +1,11 @@
-import { Injectable, Injector } from '@angular/core';
-import { SignalrMethods, SignalrMethod } from '../../../core/services/abstracts/signalr/signalr.abstract.service';
-import { SignalRCoreService } from '../../../core/services/abstracts/signalr/signalr.core.service';
+import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
 import { HttpTransportType } from '@aspnet/signalr';
+
+import { SignalrMethods, SignalrMethod } from './abstracts/signalr/signalr.abstract.service';
+import { SignalRCoreService } from './abstracts/signalr/signalr.core.service';
 
 interface ChatMethods extends SignalrMethods {
   UpdateQuote: SignalrMethod;

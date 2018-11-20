@@ -1,21 +1,20 @@
 import { from, Observable, BehaviorSubject, timer } from 'rxjs';
+import { retryWhen, delayWhen } from 'rxjs/operators';
 
 import { HubConnectionBuilder, HubConnection, HttpTransportType, HttpError } from '@aspnet/signalr';
-import { retryWhen, delayWhen } from 'rxjs/operators';
 
 export abstract class SignalRAbstractService<T extends SignalrMethods> {
 
   private connection: HubConnection;
   public connected = new BehaviorSubject<boolean>(false);
 
-  protected baseUrl: string;
-  protected url: string;
-  protected methods: T;
-  protected transport: HttpTransportType;
-  protected connectionTryDelay: number;
+  protected abstract baseUrl: string;
+  protected abstract url: string;
+  protected abstract methods: T;
+  protected abstract connectionTryDelay: number;
+  protected transport?: HttpTransportType;
 
   constructor() {
-    this.connectionTryDelay = 3000;
   }
 
   protected abstract get loginToken(): string;
@@ -49,7 +48,7 @@ export abstract class SignalRAbstractService<T extends SignalrMethods> {
   }
 
   protected stop() {
-    if (this.connection/* && this.connected.getVaule()*/) {
+    if (this.connection) {
       this.connection.stop();
       this.connection = null;
     } else {
@@ -87,13 +86,12 @@ export abstract class SignalRAbstractService<T extends SignalrMethods> {
       if (error instanceof HttpError || error.message.includes(' 1006 ')) {
         this.start().subscribe();
       } else {
-        // TODO: Disconnect user
         this.logout();
       }
     }
   }
 
-  public send(methodName: string, ...datas: any[]): Observable<any> {
+  protected send(methodName: string, ...datas: any[]): Observable<any> {
     return from(this.connection.send(methodName, ...datas));
   }
 

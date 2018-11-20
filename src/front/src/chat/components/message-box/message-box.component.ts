@@ -1,15 +1,15 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input, OnChanges, SimpleChanges } from '@angular/core';
 
 import { User } from '../../models';
 import { MessageStore } from '../../stores';
 
 @Component({
-  selector: 'app-chat-box',
-  templateUrl: './chat-box.component.html',
-  styleUrls: ['./chat-box.component.scss'],
+  selector: 'app-message-box',
+  templateUrl: './message-box.component.html',
+  styleUrls: ['./message-box.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ChatBoxComponent implements OnChanges {
+export class MessageBoxComponent implements OnChanges {
 
   @Input() user: User;
 

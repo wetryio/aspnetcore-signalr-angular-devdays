@@ -1,10 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Observable } from 'rxjs';
-
-import { QuoteService } from '../../services';
 import { User } from '../../models/user.model';
-import { loginTokenKey } from '../../../core/services/abstracts/signalr/signalr.core.service';
-import { MessageStore } from 'src/chat/stores';
+// import { loginTokenKey } from '../../../core/services/abstracts/signalr/signalr.core.service';
+import { MessageStore } from '../../stores';
 
 @Component({
   selector: 'app-chat',
@@ -14,28 +11,17 @@ import { MessageStore } from 'src/chat/stores';
 export class ChatComponent implements OnInit, OnDestroy {
 
   public currentUser: User;
-  public quote: string;
 
   constructor(
-    private messageStore: MessageStore,
-    private quoteService: QuoteService
+    private messageStore: MessageStore
     ) { }
 
   ngOnInit() {
-    if (localStorage.getItem(loginTokenKey)) { // TODO: remove if
-      this.startChat();
-    }
-    this.quoteService.run().subscribe(quote => this.quote = quote); // TODO: unsubscribe this on destroy
+    this.startChat();
   }
 
   ngOnDestroy() {
     this.stopChat();
-  }
-
-
-
-  public openChat(user: User) {
-    this.currentUser = user;
   }
 
   private startChat() {
@@ -44,6 +30,10 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   private stopChat() {
     this.messageStore.stop();
+  }
+
+  public chooseUser(user: User) {
+    this.currentUser = user;
   }
 
 }

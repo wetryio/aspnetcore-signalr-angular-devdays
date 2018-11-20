@@ -1,10 +1,9 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subject, Observable, timer } from 'rxjs';
-import { switchMap, retryWhen, delayWhen } from 'rxjs/operators';
+import { Subject, Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
-import { SignalRCoreService } from '../../../core/services/abstracts/signalr/signalr.core.service';
-import { SignalrMethod, SignalrMethods } from '../../../core/services/abstracts/signalr/signalr.abstract.service';
+import { SignalRCoreService, SignalrMethods, SignalrMethod } from '../../../core/services/abstracts/signalr';
 import { Message } from '../../../chat/models';
 
 interface ChatMethods extends SignalrMethods {
@@ -23,20 +22,11 @@ export class ChatService extends SignalRCoreService<ChatMethods> {
   public refreshList = this._refreshList.asObservable();
 
   protected url = '/chat';
-  // protected methods: {[key: string]: (...args: any[]) => void} = {
-  //   'Send': (data) => { console.log('Send', data); },
-  //   'Receive': data => this.receive(data),
-  //   'logout': () => { console.log('logout'); },
-  //   'updateUserList': () => { console.log('updateUserList'); }
-  // };
 
   protected methods: ChatMethods = {
     receive: (...data) => this.receive(...data),
     logout: () => { console.log('logout'); },
-    updateUserList: () => {
-      console.log('updateUserList');
-      this._refreshList.emit(true);
-    }
+    updateUserList: () => this._refreshList.emit(true)
   };
 
   constructor(private router: Router) {
