@@ -7,14 +7,14 @@ import { HttpTransportType } from '@aspnet/signalr';
 import { SignalrMethods, SignalrMethod } from './abstracts/signalr/signalr.abstract.service';
 import { SignalRCoreService } from './abstracts/signalr/signalr.core.service';
 
-interface ChatMethods extends SignalrMethods {
+interface QuoteMethods extends SignalrMethods {
   UpdateQuote: SignalrMethod;
 }
 
 @Injectable({
   providedIn: 'root'
 })
-export class QuoteService extends SignalRCoreService<ChatMethods> {
+export class QuoteService extends SignalRCoreService<QuoteMethods> {
 
   private _quoteReceiver = new Subject<string>();
   public quoteReceiver = this._quoteReceiver.asObservable();
@@ -23,7 +23,7 @@ export class QuoteService extends SignalRCoreService<ChatMethods> {
   protected transport = HttpTransportType.LongPolling;
   protected connectionTryDelay = 10000;
 
-  protected methods: ChatMethods = {
+  protected methods: QuoteMethods = {
     UpdateQuote: (quote) => {
       console.log('update quote', quote);
       this._quoteReceiver.next(quote);
@@ -34,6 +34,10 @@ export class QuoteService extends SignalRCoreService<ChatMethods> {
     return this.start().pipe(
       switchMap(() => this.quoteReceiver)
     );
+  }
+
+  public close() {
+    this.stop();
   }
 
 }

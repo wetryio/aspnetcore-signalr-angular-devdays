@@ -28,6 +28,7 @@ export class AuthComponent implements OnInit, OnDestroy {
     if (this.quoteSubscription) {
       this.quoteSubscription.unsubscribe();
     }
+    this.quoteService.close();
   }
 
   public start() {
