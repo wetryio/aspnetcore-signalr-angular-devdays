@@ -11,7 +11,7 @@
     <i class="fa fa-star"></i>
   </div> <!-- end chat-header -->
   
-  <div class="chat-history">
+  <div #history class="chat-history">
     <ul *ngIf="messageStore.currentChat">
       <li class="clearfix" *ngFor="let message of messageStore.currentChat.messages">
         <div class="message-data align-right" *ngIf="message.mine">
