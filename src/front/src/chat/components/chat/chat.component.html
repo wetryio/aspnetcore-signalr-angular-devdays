@@ -1,0 +1,8 @@
+
+<div class="row no-gutters h-100">
+
+  <app-user-list class="col-4 h-100" [users]="messageStore.users" (choiceChange)="chooseUser($event)"></app-user-list>
+
+  <app-message-box class="col-8 h-100" [user]="currentUser"></app-message-box>
+
+</div>

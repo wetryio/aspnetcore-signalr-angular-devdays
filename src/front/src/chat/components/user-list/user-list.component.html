@@ -1,0 +1,17 @@
+<div class="people-list" id="people-list">
+  <div class="search d-none d-sm-block" >
+    <input type="text" placeholder="search" [(ngModel)]="userSearch" />
+    <i class="fa fa-search"></i>
+  </div>
+  <ul class="list">
+    <li class="clearfix" *ngFor="let user of (users | userFilter:userSearch )" (click)="choose(user)">
+      <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01.jpg" alt="avatar" class="d-none d-sm-block" />
+      <div class="about">
+        <div class="name">{{ user.username }}</div>
+        <div class="status">
+          <i class="fa fa-circle online"></i> online
+        </div>
+      </div>
+    </li>
+  </ul>
+</div>
