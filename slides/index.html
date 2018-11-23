@@ -4,7 +4,7 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<title>reveal.js</title>
+		<title>SignalR</title>
 
 		<link rel="stylesheet" href="css/reveal.css">
 		<link rel="stylesheet" href="css/theme/black.css">
@@ -43,7 +43,7 @@
 						<h3>Introduction</h3>
 						<ol>
 							<li>Quesako ?</li>
-							<li>Avantages</li>
+							<li>Utilité</li>
 							<li>Points d'attention</li>
 						</ol>
 					</section>
@@ -59,6 +59,24 @@
 						<ol>
 							<li>Choix de la librairie</li>
 							<li>Avantages utilisation store</li>
+						</ol>
+					</section>
+				</section>
+				<section>
+					<section>
+						<h2>Introduction</h2>
+					</section>
+					<section>
+						<h3>C'est quoi ?</h3>
+						<p>Une librairie qui simplifie la création d'un web temps-réel.</p>
+					</section>
+					<section>
+						<h3>Utilité du temps réel</h3>
+						<ol>
+							<li>Edition collaborative</li>
+							<li>Satus serveur</li>
+							<li>Monitoring</li>
+							<li>...</li>
 						</ol>
 					</section>
 				</section>
@@ -87,15 +105,139 @@
 						<blockquote>&ldquo;JavaScript and TypeScript clients for SignalR for ASP.NET Core&rdquo;</blockquote>
 					</section>
 					<section>
-						<h3>Pourquoi un store ?</h3>
-						<div>
-							<img class="fragment fade-in" style="height: 500px; background-color: white;" src="./images/redux.gif" />
-							<img class="fragment fade-in" style="height: 500px; background-color: white; position: absolute; left: 143px;" src="./images/redux-signalr.png" />
-						</div>
+						<blockquote>
+							<span>ASP.NET Core SignalR == SignalR</span>
+							<span class="fragment strike">ASP.NET Core SignalR === SignalR</span>
+						</blockquote>
+					</section>
+
+					<section>
+						<h3>Compatibilité</h3>
+						<img src="./images/ModernBrowsers.png" style="background: none; border: none; box-shadow: none;" />
 						<aside class="notes">
-							SignalR est son propre déclancheur.
+							ASP.NET Core SignalR est compatible avec tous les navigateurs modernes. Mais comme la plupart des géants, Microsoft a tranché et ne supporte plus les navigateurs plus jeunes que IE11. Contrairement à SignalR qui est compatible IE 8.
 						</aside>
 					</section>
+					<section>
+						<img src="./images/Internet_Explorer_10.png" style="background: none; border: none; box-shadow: none; height: 300px;" />
+						<img src="./images/interdit.png" style="background: none; border: none; box-shadow: none; position: absolute; margin-left: -315px; margin-top: -14px; height: 500px;" />
+					</section>
+				</section>
+				<section>
+					<h3>Fonctionnement</h3>
+					<section>
+						<blockquote>
+							&ldquo;Abstraction d'utilisation de protocols définis dans les standards HTML5 et Comet&rdquo;
+						</blockquote>
+						<aside class="notes">
+							SignalR est en fait une abstraction de l’utilisation de plusieurs « Protocols ».
+							Voici les protocols par ordre de préférence (choisi automatiquement par SignalR)
+						</aside>
+					</section>
+					<section>
+						<h2>WebSocket</h2>
+						<a href="https://caniuse.com/#search=websocket"><img src="./images/websocket-compat.png" /></a>
+						<aside class="notes">
+							Seule vrai communication bidirectionnelle.
+							Tous les protocols qui vont suivre sont unidirectionnels.
+						</aside>
+					</section>
+					<section>
+						<h2>Server Sent Events</h2>
+						<a href="https://caniuse.com/#search=Server%20Sent%20Events"><img src="./images/server-sent-compat.png" /></a>
+						<aside class="notes">
+							Unidirectionnel.
+							Il faut enregistrer un listener à l'évènement "onmessage".
+							Non compatible avec les névigateurs Microsoft
+						</aside>
+					</section>
+					<section>
+						<h2>Ajax long polling</h2>
+						<a href="https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest"><img src="./images/polling-compat.png" /></a>
+						<aside class="notes">
+							Il s’agit ici de simple appels « XMLHttpRequest » n’ayant pas de timeout.
+							Une fois que le serveur a répondu, une nouvelle requête est directement envoyée afin de toujours garder une connexion active.
+						</aside>
+					</section>
+				</section>
+
+				<section>
+					<h3>Bon à savoir</h3>
+					<section>
+						<img src="./images/connection-lost.png" style="background: none; border: none; box-shadow: none;" />
+						<aside class="notes">
+							Alors que SignalR tentait une reconnexion automatique à la perte du serveur, ASP.NET Core SignalR ne le fait pas. C’est donc à nous de gérer ce cas.
+						</aside>
+					</section>
+					<section>
+						<h4>Scale-out</h4>
+						<img src="./images/signalrservicelogo.png" style="background: none; border: none; box-shadow: none;" />
+						<pre><code class="hljs cs" data-trim>
+							services.AddSignalR()
+								.AddAzureSignalR(
+									Configuration[
+										"AzureSignalR:ConnectionString"
+									]
+								);
+						</code></pre>
+						<aside class="notes">
+							Il est possible de multiplier les serveurs (scale-out) à l’aide de Redis (en théorie pas fonctionnel à 100%) ou Azure SignalR Service.
+						</aside>
+					</section>
+					<section>
+						<h4>Authentification</h4>
+						<ol>
+							<li>Cookies</li>
+							<li>Windows Authentication</li>
+							<li class="fragment highlight-green">Bearer</li>
+						</ol>
+						<pre class="fragment"><code class="hljs javascript" data-trim>
+							this.connection = new HubConnectionBuilder()
+								.withUrl(this.url, {
+									accessTokenFactory: () => this.loginToken
+								})
+								.build();
+						</code></pre>
+						<aside class="notes">
+							Il est possible d’utiliser une authentification par Cookies, Windows Authentication et Bearer (celle que nous utiliserons le plus souvent afin de maximiser la compatibilité des services).
+						</aside>
+					</section>
+					<section>
+						<h4>Choix protocols</h4>
+						<p>Vous pouvez limiter les protocols à utiliser.</p>
+						<pre><code class="hljs javascript" data-trim>
+							.withUrl(this.url, {
+								transport: signalR.HttpTransportType.WebSockets |
+									signalR.HttpTransportType.LongPolling
+							})
+						</code></pre>
+					</section>
+				</section>
+
+				<section>
+					<h3>Limitations</h3>
+					<ol>
+						<li class="fragment"><del>Limitation par CPU</del></li>
+						<li class="fragment">1 connection = 1 hub</li>
+						<li class="fragment">Votre imagination</li>
+					</ol>
+					<aside class="notes">
+						•	Il n’y a pas de limité théorique par défaut par CPU dans la version ASP.NET Core contrairement à SignalR classique qui a une limitation de requête par CPU.
+						•	1 connexion = 1 hub
+						•	Votre imagination
+							
+					</aside>
+				</section>
+
+				<section>
+					<h3>Pourquoi un store ?</h3>
+					<div>
+						<img class="fragment fade-in" style="height: 500px; background-color: white;" src="./images/redux.gif" />
+						<img class="fragment fade-in" style="height: 500px; background-color: white; position: absolute; left: 143px;" src="./images/redux-signalr.png" />
+					</div>
+					<aside class="notes">
+						SignalR est son propre déclancheur.
+					</aside>
 				</section>
 			</div>
 		</div>
@@ -103,7 +245,7 @@
 		<script src="lib/js/head.min.js"></script>
 		<script src="js/reveal.js"></script>
 
-		<script>
+		<!-- <script>
 			// More info about config & dependencies:
 			// - https://github.com/hakimel/reveal.js#configuration
 			// - https://github.com/hakimel/reveal.js#dependencies
@@ -115,6 +257,33 @@
 					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
 				]
 			});
+		</script> -->
+
+		<script>
+
+			// More info https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				defaultTiming: 30,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// More info https://github.com/hakimel/reveal.js#dependencies
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/search/search.js', async: true },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
 		</script>
 	</body>
 </html>
