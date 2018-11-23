@@ -15,12 +15,12 @@
     <ul *ngIf="messageStore.currentChat">
       <li class="clearfix" *ngFor="let message of messageStore.currentChat.messages">
         <div class="message-data align-right" *ngIf="message.mine">
-            <span class="message-data-time" >10:10 AM, Today</span> &nbsp; &nbsp;
-            <span class="message-data-name" >Your</span><i class="fa fa-circle me"></i>
+            <!-- <span class="message-data-time" >10:10 AM, Today</span> &nbsp; &nbsp; -->
+            <span class="message-data-name" >Your</span>&nbsp;<i class="fa fa-circle me"></i>
         </div>
         <div class="message-data" *ngIf="!message.mine">
-            <span class="message-data-name" >Their</span><i class="fa fa-circle online"></i> &nbsp; &nbsp;
-            <span class="message-data-time" >10:10 AM, Today</span>
+            <span class="message-data-name" >Their</span>&nbsp;<i class="fa fa-circle online"></i> &nbsp; &nbsp;
+            <!-- <span class="message-data-time" >10:10 AM, Today</span> -->
         </div>
         <div class="message" [ngClass]="{'my-message': !message.mine, 'other-message float-right': message.mine}">
           {{ message.content }}
