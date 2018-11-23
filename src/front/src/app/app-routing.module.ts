@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthComponent } from '../core/components';
 import { AuthGuard } from '../core/guards';
+import { environment } from 'src/environments/environment';
 
 const routes: Routes = [
   {
@@ -17,6 +18,12 @@ const routes: Routes = [
     path: 'auth',
     component: AuthComponent
   },
+  ...(environment.production ? [] : [
+    {
+      path: 'monitoring',
+      loadChildren: '../monitoring/monitoring.module#MonitoringModule',
+    }
+  ]),
   {
     path: '**',
     redirectTo: '/chat'
