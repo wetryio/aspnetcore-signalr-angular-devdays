@@ -102,6 +102,9 @@ ul {
   border-bottom-right-radius: 5px;
   
   color: #434651;
+
+  display: flex;
+  flex-direction: column;
   
   .chat-header {
     padding: 20px;
@@ -139,6 +142,8 @@ ul {
     border-bottom: 2px solid white;
     overflow-y: scroll;
     // height: 575px;
+
+    flex: 1;
     
     .message-data {
       margin-bottom: 15px;
@@ -222,6 +227,12 @@ ul {
       
       &:hover {
         color: darken($blue, 7%);
+      }
+      &:disabled {
+        cursor: auto;
+        &:hover {
+          color: $blue;
+        }
       }
     }
   }
