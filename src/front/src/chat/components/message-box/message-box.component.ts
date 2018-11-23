@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, Input, OnChanges,
-  SimpleChanges, ViewChild, ElementRef, OnDestroy } from '@angular/core';
+  SimpleChanges, ViewChild, ElementRef, OnDestroy, AfterViewInit } from '@angular/core';
 
 import { reaction, IReactionDisposer } from 'mobx';
 
@@ -12,15 +12,20 @@ import { MessageStore } from '../../stores';
   styleUrls: ['./message-box.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MessageBoxComponent implements OnChanges, OnDestroy {
+export class MessageBoxComponent implements AfterViewInit, OnChanges, OnDestroy {
 
   @Input() user: User;
   @ViewChild('history') history: ElementRef;
+  @ViewChild('input') input: ElementRef;
 
   public messageToSend: string;
   private messageReactionDisposer: IReactionDisposer;
 
   constructor(private messageStore: MessageStore) { }
+
+  ngAfterViewInit() {
+    this.initSubmitOnEnter();
+  }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.user && this.user) {
@@ -46,10 +51,19 @@ export class MessageBoxComponent implements OnChanges, OnDestroy {
     this.messageToSend = '';
   }
 
+  private initSubmitOnEnter() {
+    this.input.nativeElement.addEventListener('keypress', (event: KeyboardEvent) => {
+      if (event.which === 13) {
+        this.send();
+        event.preventDefault();
+        this.input.nativeElement.value = '';
+      }
+    });
+  }
+
   private initScroll() {
     if (!this.messageReactionDisposer) {
       this.messageReactionDisposer = reaction(() => this.messageStore.currentChat.messages, () => {
-        console.log('messaaaaage');
         setTimeout(() => { // whait that message is added to view
           this.scrollBottom();
         }, 0);
