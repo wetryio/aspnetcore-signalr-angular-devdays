@@ -15,11 +15,11 @@ export class AuthService extends BaseWebService {
     public login(name: string): Observable<any> {
         return this._post('/account', { userName: name })
             .pipe(
-                tap(response => this.storeToken(response.accessToken))
+                tap(response => this.storeToken(response.accessToken)),
             );
     }
 
-    private storeToken(token): void {
+    private storeToken(token: string): void {
         if (typeof localStorage !== 'undefined') {
             localStorage.setItem(loginTokenKey, token);
         }

@@ -1,32 +1,32 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subject, Observable } from 'rxjs';
+import { Subject, Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
 import { SignalRCoreService, SignalrMethods, SignalrMethod } from '../../../core/services/abstracts/signalr';
 import { Message } from '../../../chat/models';
 
 interface ChatMethods extends SignalrMethods {
-  receive: SignalrMethod;
-  logout: SignalrMethod;
-  updateUserList: SignalrMethod;
+  // receive: SignalrMethod;
+  // logout: SignalrMethod;
+  // updateUserList: SignalrMethod;
 }
 
 @Injectable()
 export class ChatService extends SignalRCoreService<ChatMethods> {
 
-  private _messageReceiver = new Subject<Message>();
-  public messageReceiver = this._messageReceiver.asObservable();
+  // private _messageReceiver = new Subject<Message>();
+  // public messageReceiver = this._messageReceiver.asObservable();
 
-  private _refreshUserList = new EventEmitter<boolean>();
-  public refreshUserList = this._refreshUserList.asObservable();
+  // private _refreshUserList = new EventEmitter<boolean>();
+  // public refreshUserList = this._refreshUserList.asObservable();
 
   protected url = '/chat';
 
   protected methods: ChatMethods = {
-    receive: (...data) => this.receive(...data),
-    logout: () => { console.log('logout'); },
-    updateUserList: () => this._refreshUserList.emit(true)
+    // receive: (...data) => this.receive(...data),
+    // logout: () => { console.log('logout'); },
+    // updateUserList: () => this._refreshUserList.emit(true)
   };
 
   constructor(private router: Router) {
@@ -34,30 +34,43 @@ export class ChatService extends SignalRCoreService<ChatMethods> {
   }
 
   protected logout(): void {
-    super.logout();
-    this.router.navigate(['/auth']);
+    // super.logout();
+    // this.router.navigate(['/auth']);
   }
 
+  /**
+   * Start messages listening
+   */
   public listen(): Observable<Message> {
-    return this.start().pipe(
-      switchMap(() => this.messageReceiver)
-    );
+    // return this.start().pipe(
+    //   switchMap(() => this.messageReceiver)
+    // );
+    return of(null);
   }
 
+  /**
+   * Stop messages listening
+   */
   public stopListening(): void {
-    this.stop();
+    // this.stop();
   }
 
+  /**
+   * Message received business
+   * @param data 0 = userId, 1 = message content
+   */
   private receive(...data: any[]) {
-    console.log('reveive', data);
-    this._messageReceiver.next({
-      userId: data[0],
-      content: data[1]
-    });
+    // this._messageReceiver.next({
+    //   userId: data[0],
+    //   content: data[1]
+    // });
   }
 
+  /**
+   * Send message
+   */
   public sendMessage(receiverId: string, message: string): void {
-    this.send('SendMessageToUserAsync', receiverId, message);
+    // this.send('SendMessageToUserAsync', receiverId, message);
   }
 
 }
