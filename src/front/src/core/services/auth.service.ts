@@ -15,7 +15,7 @@ export class AuthService extends BaseWebService {
     public login(name: string): Observable<any> {
         return this._post('/account', { userName: name })
             .pipe(
-                tap(response => this.storeToken(response.accessToken)),
+                tap(response => this.storeToken(response.accessToken))
             );
     }
 
