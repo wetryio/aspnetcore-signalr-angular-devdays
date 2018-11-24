@@ -80,6 +80,15 @@
 						</ol>
 					</section>
 				</section>
+
+				<section>
+					<section>
+						<h2>Côté serveur</h2>
+					</section>
+
+					<!-- Add server sections -->
+				</section>
+
 				<section>
 					<section>
 						<h2>Côté client</h2>
@@ -231,7 +240,6 @@
 						•	Il n’y a pas de limité théorique par défaut par CPU dans la version ASP.NET Core contrairement à SignalR classique qui a une limitation de requête par CPU.
 						•	1 connexion = 1 hub
 						•	Votre imagination
-							
 					</aside>
 				</section>
 
@@ -247,6 +255,11 @@
 				</section>
 
 				<section>
+					<h3>Démo serveur</h3>
+
+				</section>
+
+				<section>
 					<h3>Démo client</h3>
 					<div style="background-color: #103B62">SignalR Abstract Service</div>
 					<div style="background-color: #20507B">SignalR Core Service</div>
@@ -254,7 +267,9 @@
 					<div style="background-color: #84A6C5">Store</div>
 					<div style="background-color: rgb(162, 182, 201)">View</div>
 					<aside class="notes">
-						SignalR est son propre déclancheur.
+						<p>Nous commencerons par faire une classe abstraite qui reprend les différents mécanismes transversaux comme la gestion en cas de déconnection</p>
+						<p>Le Core est aussi une classe abstraite qui hérite de celle du dessus afin de faire quelques configurations transversales</p>
+						<p>On va enfin créer un service sur base des couches précédentes et le consommer</p>
 					</aside>
 				</section>
 			</div>
