@@ -16,14 +16,19 @@ export class AuthComponent implements OnInit, OnDestroy {
 
   constructor(
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private quoteService: QuoteService
   ) { }
 
   ngOnInit() {
-    this.quote = 'mocked quote';
+    this.quoteSubscription = this.quoteService.run().subscribe(quote => this.quote = quote);
   }
 
   ngOnDestroy() {
+    if (this.quoteSubscription) {
+      this.quoteSubscription.unsubscribe();
+    }
+    this.quoteService.close();
   }
 
   public start() {
