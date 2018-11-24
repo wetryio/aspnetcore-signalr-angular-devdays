@@ -8,6 +8,7 @@ import { SignalrMethods, SignalrMethod } from './abstracts/signalr/signalr.abstr
 import { SignalRCoreService } from './abstracts/signalr/signalr.core.service';
 
 interface QuoteMethods extends SignalrMethods {
+  UpdateQuote: SignalrMethod;
 }
 
 @Injectable({
@@ -15,22 +16,31 @@ interface QuoteMethods extends SignalrMethods {
 })
 export class QuoteService extends SignalRCoreService<QuoteMethods> {
 
+  private _quoteReceiver = new Subject<string>();
+  public quoteReceiver = this._quoteReceiver.asObservable();
+
   protected url = '/quote';
+  protected transport = HttpTransportType.LongPolling;
+  protected connectionTryDelay = 10000;
 
   protected methods: QuoteMethods = {
+    UpdateQuote: (quote) => this._quoteReceiver.next(quote)
   };
 
   /**
    * Start quote listening
    */
   public run(): Observable<string> {
-    return of(null);
+    return this.start().pipe(
+      switchMap(() => this.quoteReceiver)
+    );
   }
 
   /**
    * Stop quote listening
    */
   public close() {
+    this.stop();
   }
 
 }
