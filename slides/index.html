@@ -164,7 +164,13 @@
 				<section>
 					<h3>Bon à savoir</h3>
 					<section>
-						<img src="./images/connection-lost.png" style="background: none; border: none; box-shadow: none;" />
+						<img src="./images/connection-lost.png" style="background: none; border: none; box-shadow: none; height: 350px;" />
+						<pre><code class="hljs javascript" data-trim style="font-size: 18px;">
+							// Quand on perd la connection
+							connection.onclose((error) => connection.start());
+							// Tant que la connection n'a pas pu être établie
+							retryWhen(errors => errors.pipe(delayWhen(val => timer(3000))));
+						</code></pre>
 						<aside class="notes">
 							Alors que SignalR tentait une reconnexion automatique à la perte du serveur, ASP.NET Core SignalR ne le fait pas. C’est donc à nous de gérer ce cas.
 						</aside>
@@ -235,6 +241,18 @@
 						<img class="fragment fade-in" style="height: 500px; background-color: white;" src="./images/redux.gif" />
 						<img class="fragment fade-in" style="height: 500px; background-color: white; position: absolute; left: 143px;" src="./images/redux-signalr.png" />
 					</div>
+					<aside class="notes">
+						SignalR est son propre déclancheur.
+					</aside>
+				</section>
+
+				<section>
+					<h3>Démo client</h3>
+					<div style="background-color: #103B62">SignalR Abstract Service</div>
+					<div style="background-color: #20507B">SignalR Core Service</div>
+					<div style="background-color: #537DA2">Service</div>
+					<div style="background-color: #84A6C5">Store</div>
+					<div style="background-color: rgb(162, 182, 201)">View</div>
 					<aside class="notes">
 						SignalR est son propre déclancheur.
 					</aside>
