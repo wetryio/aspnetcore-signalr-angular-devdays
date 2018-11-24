@@ -39,6 +39,6 @@ export class ChatUtilsService extends BaseWebService {
         }
         this.router.navigate(['/auth']);
     }
-}
+  }
 
 }
