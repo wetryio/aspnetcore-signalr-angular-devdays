@@ -8,9 +8,6 @@ import { ChatService, ChatUtilsService } from '../services';
 @Injectable()
 export class MessageStore {
 
-    // private messageSubscription: Subscription;
-    // private usersSubscription: Subscription;
-
     @observable private _conversations: {[key: string]: Chat};
     @observable private _currentChat: Chat;
     @observable public users: User[];
@@ -24,10 +21,10 @@ export class MessageStore {
     }
 
     public get connected(): Observable<boolean> {
-        return of(true); // this.chatService.connected;
+        return of(true);
     }
 
-    constructor(/*private chatService: ChatService, */private chatUtilsService: ChatUtilsService) {
+    constructor(private chatUtilsService: ChatUtilsService) {
         this.init();
     }
 
@@ -66,12 +63,6 @@ export class MessageStore {
      * Start chat jobs
      */
     public start() {
-        // this.messageSubscription = this.chatService.listen().subscribe((message) => {
-        //     this.addMessage(message);
-        // });
-        // this.usersSubscription = this.chatService.refreshUserList.subscribe(() => {
-        //     this.refreshUserList();
-        // });
         this.refreshUserList();
     }
 
@@ -79,13 +70,6 @@ export class MessageStore {
      * Stop chat jobs
      */
     @action public stop() {
-        // if (this.messageSubscription) {
-        //     this.messageSubscription.unsubscribe();
-        // }
-        // if (this.usersSubscription) {
-        //     this.usersSubscription.unsubscribe();
-        // }
-        // this.chatService.stopListening();
         this._currentChat = null;
     }
 
@@ -111,9 +95,6 @@ export class MessageStore {
     @action public addMessage(message: Message) {
         const chat = this.getChatByUser({ username: '?', userId: message.userId });
         chat.messages = [...chat.messages, message];
-        // if (message.mine) {
-        //     this.chatService.sendMessage(message.userId, message.content);
-        // }
     }
 
 }

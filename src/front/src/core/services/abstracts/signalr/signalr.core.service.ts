@@ -13,14 +13,10 @@ export abstract class SignalRCoreService<T extends SignalrMethods> extends Signa
     }
 
     protected get loginToken(): string {
-        // if (typeof localStorage !== undefined) {
-        //     return localStorage.getItem(loginTokenKey);
-        // }
         return null;
     }
 
     protected logout(): void {
-        // localStorage.removeItem(loginTokenKey);
     }
 
 }
