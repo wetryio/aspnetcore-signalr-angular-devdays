@@ -1,5 +1,5 @@
 import { from, Observable, BehaviorSubject, timer, of } from 'rxjs';
-import { retryWhen, delayWhen } from 'rxjs/operators';
+import { retryWhen, delayWhen, tap } from 'rxjs/operators';
 
 import { HubConnectionBuilder, HubConnection, HttpTransportType, HttpError } from '@aspnet/signalr';
 
@@ -30,6 +30,22 @@ export abstract class SignalRAbstractService<T extends SignalrMethods> {
    * Start SignalR process
    */
   protected start(): Observable<any> {
+
+    // if (!this.connected.getValue()) {
+    //   return from(this.connection.start()).pipe(
+    //     tap(
+    //       () => this.connected.next(true),
+    //       () => this.connected.next(false)
+    //     ),
+    //     retryWhen(errors => {
+    //       return errors.pipe(delayWhen(val => timer(this.connectionTryDelay)));
+    //     })
+    //   );
+    // } else {
+    //   console.warn('already connected');
+    //   return of(false);
+    // }
+
     // return new Observable((observer) => {
     //   if (!this.connected.getValue()) {
     //     this.init();
