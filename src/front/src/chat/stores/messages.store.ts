@@ -56,7 +56,7 @@ export class MessageStore {
         this.messageSubscription = this.chatService.listen().subscribe((message) => {
             this.addMessage(message);
         });
-        this.usersSubscription = this.chatService.refreshList.subscribe(() => {
+        this.usersSubscription = this.chatService.refreshUserList.subscribe(() => {
             this.refreshUserList();
         });
         this.refreshUserList();

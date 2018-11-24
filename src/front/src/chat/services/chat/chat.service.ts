@@ -18,15 +18,15 @@ export class ChatService extends SignalRCoreService<ChatMethods> {
   private _messageReceiver = new Subject<Message>();
   public messageReceiver = this._messageReceiver.asObservable();
 
-  private _refreshList = new EventEmitter<boolean>();
-  public refreshList = this._refreshList.asObservable();
+  private _refreshUserList = new EventEmitter<boolean>();
+  public refreshUserList = this._refreshUserList.asObservable();
 
   protected url = '/chat';
 
   protected methods: ChatMethods = {
     receive: (...data) => this.receive(...data),
     logout: () => { console.log('logout'); },
-    updateUserList: () => this._refreshList.emit(true)
+    updateUserList: () => this._refreshUserList.emit(true)
   };
 
   constructor(private router: Router) {
