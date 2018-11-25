@@ -146,6 +146,24 @@
 					<section>
 						<h2>WebSocket</h2>
 						<a href="https://caniuse.com/#search=websocket"><img src="./images/websocket-compat.png" /></a>
+						<!-- <div>
+							const exampleSocket = new WebSocket("ws://www.example.com/socketserver", "protocolOne");
+							function sendText(content) {
+								var msg = {
+									'SendText',
+								  	content
+								};
+								exampleSocket.send(JSON.stringify(msg));
+							}
+							exampleSocket.onmessage = function(event) {
+								const msg = JSON.parse(event.data);
+								switch(msg.method) {
+									case 'method1':
+										method1(msg.content);
+										break;
+								}
+							}
+						</div> -->
 						<aside class="notes">
 							Seule vrai communication bidirectionnelle.
 							Tous les protocols qui vont suivre sont unidirectionnels.
@@ -154,6 +172,15 @@
 					<section>
 						<h2>Server Sent Events</h2>
 						<a href="https://caniuse.com/#search=Server%20Sent%20Events"><img src="./images/server-sent-compat.png" /></a>
+						<!-- <div>
+							var source = new EventSource("www.example.com/sse");
+							source.onmessage = function(event) {
+								const msg = JSON.parse(event.data);
+								switch(msg.method) {
+									...
+								}
+							};
+						</div> -->
 						<aside class="notes">
 							Unidirectionnel.
 							Il faut enregistrer un listener à l'évènement "onmessage".
@@ -163,11 +190,36 @@
 					<section>
 						<h2>Ajax long polling</h2>
 						<a href="https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest"><img src="./images/polling-compat.png" /></a>
+						<!-- <div>
+							const pollEnable = true;
+							function poll() {
+								var xhr = new XMLHttpRequest();
+								xhr.open('GET','/resource');
+								xhr.timeout = 60000; 
+								function loop() {
+									if (pollEnable) {
+										poll();
+									} 
+								}
+								xhr.addEventListener('load', function() { loop(); }); 
+								xhr.addEventListener('error', function() { loop(); }); 
+								xhr.send();
+							}
+						</div> -->
 						<aside class="notes">
 							Il s’agit ici de simple appels « XMLHttpRequest » n’ayant pas de timeout.
 							Une fois que le serveur a répondu, une nouvelle requête est directement envoyée afin de toujours garder une connexion active.
 						</aside>
 					</section>
+					<!-- <section>
+						<div>
+							const connection = new signalR.HubConnectionBuilder().withUrl("/hub").build();
+							function sendText(content) {
+								connection.invoke("SendText", content);
+							}
+							connection.on("method1", (content) => method1(content));
+						</div>
+					</section> -->
 				</section>
 
 				<section>
