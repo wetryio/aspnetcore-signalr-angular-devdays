@@ -13,7 +13,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   public currentUser: User;
 
   constructor(
-    private messageStore: MessageStore
+    public messageStore: MessageStore
     ) { }
 
   ngOnInit() {
