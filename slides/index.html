@@ -144,7 +144,7 @@
 						</aside>
 					</section>
 					<section>
-						<h2>WebSocket</h2>
+						<h4>WebSocket</h4>
 						<a href="https://caniuse.com/#search=websocket"><img src="./images/websocket-compat.png" /></a>
 						<!-- <div>
 							const exampleSocket = new WebSocket("ws://www.example.com/socketserver", "protocolOne");
@@ -170,7 +170,7 @@
 						</aside>
 					</section>
 					<section>
-						<h2>Server Sent Events</h2>
+						<h4>Server Sent Events</h4>
 						<a href="https://caniuse.com/#search=Server%20Sent%20Events"><img src="./images/server-sent-compat.png" /></a>
 						<!-- <div>
 							var source = new EventSource("www.example.com/sse");
@@ -188,7 +188,7 @@
 						</aside>
 					</section>
 					<section>
-						<h2>Ajax long polling</h2>
+						<h4>Ajax long polling</h4>
 						<a href="https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest"><img src="./images/polling-compat.png" /></a>
 						<!-- <div>
 							const pollEnable = true;
@@ -220,6 +220,25 @@
 							connection.on("method1", (content) => method1(content));
 						</div>
 					</section> -->
+					<section>
+						<h4>WebSocket vs SignalR</h4>
+						<pre><code class="hljs javascript" data-trim style="font-size: 18px;">const exampleSocket = new WebSocket("ws://www.example.com/socketserver", ...);
+function sendText(content) {
+	var msg = { method: 'SendText', content };
+	exampleSocket.send(JSON.stringify(msg));
+}
+exampleSocket.onmessage = function(event) {
+	const msg = JSON.parse(event.data);
+	switch(msg.method) {
+		case 'method1': method1(msg.content); break;
+	}
+}</code></pre>
+						<pre class="fragment"><code class="hljs javascript" data-trim style="font-size: 18px;">const connection = new signalR.HubConnectionBuilder().withUrl("/hub").build();
+function sendText(content) {
+	connection.invoke("SendText", content);
+}
+connection.on("method1", (content) => method1(content));</code></pre>
+					</section>
 				</section>
 
 				<section>
