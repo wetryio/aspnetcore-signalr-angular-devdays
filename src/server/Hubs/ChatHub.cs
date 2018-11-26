@@ -19,7 +19,7 @@ namespace Server.Hubs
 
     public class ChatHub : Hub<IChatClient>
     {
-        private readonly IHubClients<IDashboardClient> _hubClients;
+        private readonly IHubContext<DashboardHub, IDashboardClient> _hubClients;
 
         public string GetCurrentUserId
         {
@@ -29,7 +29,7 @@ namespace Server.Hubs
             }
         }
 
-        public ChatHub(IHubClients<IDashboardClient> hubClients)
+        public ChatHub(IHubContext<DashboardHub, IDashboardClient> hubClients)
         {
             _hubClients = hubClients;
         }
@@ -37,7 +37,7 @@ namespace Server.Hubs
         public async Task SendMessageToUserAsync(string to, string message)
         {
             await Clients.User(to).ReceiveMessage(GetCurrentUserId, message);
-            await _hubClients.All.MessageReceive(to, message);
+            await _hubClients.Clients.All.MessageReceive(to, message);
         }
 
         public override async Task OnConnectedAsync()

@@ -26,12 +26,12 @@ namespace Server.Controllers
         private readonly MemoryCacheEntryOptions _cacheEntryOptions;
         private readonly AppSettings _appSettings;
         private readonly ILogger<AccountController> _logger;
-        private readonly IHubClients<IDashboardClient> _hubClients;
+        private readonly IHubContext<DashboardHub, IDashboardClient> _hubClients;
 
         private const string USERS_CACHE_KEY = "users";
 
         public AccountController(IMemoryCache memoryCache, IOptions<AppSettings> appSettings,
-                                    ILogger<AccountController> logger, IHubClients<IDashboardClient> hubClients)
+                                    ILogger<AccountController> logger, IHubContext<DashboardHub, IDashboardClient> hubClients)
         {
             _cache = memoryCache;
             _cacheEntryOptions = new MemoryCacheEntryOptions()
@@ -46,8 +46,6 @@ namespace Server.Controllers
         [AllowAnonymous]
         public IActionResult Post([FromBody] SignInDto user)
         {
-            _logger.LogCritical("LOGGER", user.Username);
-
             try
             {
                 if (_cache.GetOrCreate(USERS_CACHE_KEY,
@@ -95,7 +93,7 @@ namespace Server.Controllers
             List<ApplicationUser> users = _cache.GetOrCreate(USERS_CACHE_KEY,
                         (e) => new List<ApplicationUser>());
 
-            _hubClients.All.UpdateUsers(users.Count);
+            _hubClients.Clients.All.UpdateUsers(users.Count);
             users.Add(appUser);
             _cache.Set(USERS_CACHE_KEY, users);
         }
