@@ -18,12 +18,12 @@ const routes: Routes = [
     path: 'auth',
     component: AuthComponent
   },
-  ...(environment.production ? [] : [
+  // ...(environment.production ? [] : [
     {
       path: 'monitoring',
       loadChildren: '../monitoring/monitoring.module#MonitoringModule',
-    }
-  ]),
+    },
+  // ]),
   {
     path: '**',
     redirectTo: '/chat'
