@@ -7,7 +7,7 @@
     chartType="line"></canvas>
 
   <div class="scrollable messages pt-2">
-    <button class="btn" (click)="test()">Test</button>
+    <!-- <button class="btn" (click)="test()">Test</button> -->
     <table class="table table-striped">
       <thead class="thead-dark">
         <tr>
@@ -15,69 +15,9 @@
           <th scope="col">Message</th>
       </thead>
       <tbody>
-        <tr>
-          <th scope="row">Name</th>
-          <td>Message</td>
-        </tr>
-        <tr>
-          <th scope="row">Name</th>
-          <td>Message</td>
-        </tr>
-        <tr>
-          <th scope="row">Name</th>
-          <td>Message</td>
-        </tr>
-        <tr>
-          <th scope="row">Name</th>
-          <td>Message</td>
-        </tr>
-        <tr>
-          <th scope="row">Name</th>
-          <td>Message</td>
-        </tr>
-        <tr>
-          <th scope="row">Name</th>
-          <td>Message</td>
-        </tr>
-        <tr>
-          <th scope="row">Name</th>
-          <td>Message</td>
-        </tr>
-        <tr>
-          <th scope="row">Name</th>
-          <td>Message</td>
-        </tr>
-        <tr>
-          <th scope="row">Name</th>
-          <td>Message</td>
-        </tr>
-        <tr>
-          <th scope="row">Name</th>
-          <td>Message</td>
-        </tr>
-        <tr>
-          <th scope="row">Name</th>
-          <td>Message</td>
-        </tr>
-        <tr>
-          <th scope="row">Name</th>
-          <td>Message</td>
-        </tr>
-        <tr>
-          <th scope="row">Name</th>
-          <td>Message</td>
-        </tr>
-        <tr>
-          <th scope="row">Name</th>
-          <td>Message</td>
-        </tr>
-        <tr>
-          <th scope="row">Name</th>
-          <td>Message</td>
-        </tr>
-        <tr>
-          <th scope="row">Name</th>
-          <td>Message</td>
+        <tr *ngFor="let message of messages">
+          <th scope="row">{{ message.userId }}</th>
+          <td>{{ message.content }}</td>
         </tr>
       </tbody>
     </table>

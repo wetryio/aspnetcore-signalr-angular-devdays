@@ -1,14 +1,15 @@
 import { Component, OnInit, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { MonitoringService } from './services/monitoring.service';
+import { Message } from 'src/chat/models';
 
 @Component({
   selector: 'app-monitoring',
   templateUrl: './monitoring.component.html',
-  styleUrls: ['./monitoring.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./monitoring.component.scss']
 })
 export class MonitoringComponent implements OnInit, OnDestroy {
 
+  public messages: Message[];
   public lineChartOptions: any;
   public lineChartData: any[];
   public lineChartLabels: any[];
@@ -18,21 +19,35 @@ export class MonitoringComponent implements OnInit, OnDestroy {
       responsive: true
     };
     this.lineChartData = [
-      {data: [65, 59, 80, 81, 56, 55, 40]}
+      {data: []}
     ];
-    this.lineChartLabels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+    this.lineChartLabels = [];
+    this.messages = [];
   }
 
   ngOnInit() {
     this.monitoringService.run().subscribe();
+    this.monitoringService.messageReceiver.subscribe(message => {
+      this.messages.push(message);
+    });
+    this.monitoringService.userNumberReceiver.subscribe(userNumber => {
+      this.addElementToShart(userNumber);
+    });
   }
 
   ngOnDestroy() {
     this.monitoringService.close();
   }
 
-  public test() {
-    this.monitoringService.test();
+  private addElementToShart(userNumber: number) {
+    this.lineChartData = [
+      {data: [...this.lineChartData[0].data, userNumber]}
+    ];
+    this.lineChartLabels = [...this.lineChartLabels, (new Date()).getSeconds.toString()];
   }
+
+  // public test() {
+  //   this.monitoringService.test();
+  // }
 
 }

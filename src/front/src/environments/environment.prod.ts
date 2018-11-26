@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  baseApiUrl: 'https://devday.wetry.io:5001/api',
-  baseHubUrl: 'https://devday.wetry.io:5001',
+  baseApiUrl: 'http://devday.wetry.io:5000/api',
+  baseHubUrl: 'http://devday.wetry.io:5000',
   connectionTryDelayDefault: 3000
 };
