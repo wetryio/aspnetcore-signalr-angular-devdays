@@ -20,7 +20,7 @@ namespace Server
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
-                .UseUrls("https://0.0.0.0:5001", "http://0.0.0.0:5000", "http://0.0.0.0", "https://0.0.0.0")
+                .UseUrls("https://0.0.0.0:5001", "http://0.0.0.0:5000")
                 .UseKestrel();
     }
 }
