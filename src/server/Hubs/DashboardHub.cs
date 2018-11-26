@@ -10,7 +10,6 @@ namespace Server.Hubs
 {
     public interface IDashboardClient
     {
-        Task UpdateMessages(List<MessageCache> messages);
         Task MessageReceive(string from, string message);
         Task UpdateUsers(int userConnected);
     }
@@ -24,11 +23,6 @@ namespace Server.Hubs
         public override async Task  OnConnectedAsync()
         {
             await base.OnConnectedAsync();
-        }
-
-        public async Task Test(string testInput)
-        {
-            await Clients.All.UpdateUsers(10);
         }
     }
 }
