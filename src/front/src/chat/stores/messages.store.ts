@@ -50,6 +50,7 @@ export class MessageStore {
     @action public switchConversation(user: User) {
         this._currentChat = this.getChatByUser(user);
         this._currentChat.user = user;
+        this.changeUnReadState(user, false);
     }
 
     public start() {
@@ -88,7 +89,25 @@ export class MessageStore {
         chat.messages = [...chat.messages, message];
         if (message.mine) {
             this.chatService.sendMessage(message.userId, message.content);
+        } else {
+            if (!this.currentChat || this.currentChat.user.username !== message.userId) {
+                this.changeUnReadState({ username: message.userId, userId: message.userId }, true);
+            }
         }
+    }
+
+    @action private changeUnReadState(user: User, state: boolean) {
+        this.users = this.users.map(u => {
+            if (u.username === user.username) {
+                return <User> {
+                    username: user.username,
+                    userId: user.userId,
+                    hasUnReadedMessage: state
+                };
+            } else {
+                return u;
+            }
+        });
     }
 
 }

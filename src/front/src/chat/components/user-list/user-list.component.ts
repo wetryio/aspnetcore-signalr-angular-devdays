@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
 
-import { User } from 'src/chat/models';
+import { User } from '../../../chat/models';
 
 @Component({
   selector: 'app-user-list',
