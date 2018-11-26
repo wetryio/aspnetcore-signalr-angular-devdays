@@ -29,7 +29,7 @@
 						<h1>SignalR</h1>
 						<h4>Du WEB temps réel</h4>
 						<p>
-							<small>Présenté par <a href="">Patrick Grassels</a> et <a href="">David Gilson</a></small>
+							<small>Présenté par <a href="https://www.linkedin.com/in/patrick-grasseels-a132a381/" target="_blank">Patrick Grasseels</a> et <a href="https://www.linkedin.com/in/david-gilson-innovate/" target="_blank">David Gilson</a></small>
 						</p>
 						<aside class="notes">
 						</aside>
@@ -63,11 +63,17 @@
 					<section>
 						<h3>Côté client</h3>
 						<ol>
-							<li>Choix de la librairie</li>
+							<li>Package NPM ?</li>
+							<li>Fonctionnement interne</li>
 							<li>Avantages utilisation store</li>
 						</ol>
 					</section>
 				</section>
+
+				<section>
+					<h2>Résultat final</h2>
+				</section>
+
 				<section>
 					<section>
 						<h2>Introduction</h2>
@@ -153,10 +159,14 @@
 				</section>
 
 				<section>
+					<h2>Demo serveur</h2>
+				</section>
+
+				<section>
 					<section>
 						<h2>Côté client</h2>
 					</section>
-					<section>
+					<!-- <section>
 						<h3>Choix de la librairie</h3>
 						<ol>
 							<li class="fragment fade-in" data-fragment-index="1">
@@ -171,7 +181,7 @@
 								<p>@aspnet/signalr</p>
 							</li>
 						</ol>
-					</section>
+					</section> -->
 					<section>
 						<h3>@aspnet/signalr</h3>
 						<blockquote>&ldquo;JavaScript and TypeScript clients for SignalR for ASP.NET Core&rdquo;</blockquote>
@@ -305,8 +315,60 @@ connection.on("method1", (content) => method1(content));</code></pre>
 				</section>
 
 				<section>
-					<h3>Bon à savoir</h3>
+					<h3>Point d'attention</h3>
 					<section>
+							<img src="./images/connection-lost.png" style="background: none; border: none; box-shadow: none; height: 350px;" />
+							<pre><code class="hljs javascript" data-trim style="font-size: 18px;">
+								// Quand on perd la connection
+								connection.onclose((error) => connection.start());
+								// Tant que la connection n'a pas pu être établie
+								retryWhen(errors => errors.pipe(delayWhen(val => timer(3000))));
+							</code></pre>
+							<aside class="notes">
+								Alors que SignalR tentait une reconnexion automatique à la perte du serveur, ASP.NET Core SignalR ne le fait pas. C’est donc à nous de gérer ce cas.
+							</aside>
+						</section>
+				</section>
+
+				<section>
+					<h2>Démo client 1</h2>
+					<div style="background-color: #103B62">SignalR Abstract Service</div>
+					<div style="background-color: #20507B">SignalR Core Service</div>
+					<div style="background-color: #537DA2">Service</div>
+					<!-- <div style="background-color: #84A6C5">Store</div> -->
+					<div style="background-color: rgb(162, 182, 201)">View</div>
+					<aside class="notes">
+						<p>Nous commencerons par faire une classe abstraite qui reprend les différents mécanismes transversaux comme la gestion en cas de déconnection</p>
+						<p>Le Core est aussi une classe abstraite qui hérite de celle du dessus afin de faire quelques configurations transversales</p>
+						<p>On va enfin créer un service sur base des couches précédentes et le consommer</p>
+					</aside>
+				</section>
+
+				<section>
+					<h3>Intégration dans un Store</h3>
+					<div>
+						<img class="fragment fade-in" style="height: 500px; background-color: white;" src="./images/redux.gif" />
+						<img class="fragment fade-in" style="height: 500px; background-color: white; position: absolute; left: 143px;" src="./images/redux-signalr.png" />
+					</div>
+					<aside class="notes">
+						SignalR est son propre déclancheur.
+					</aside>
+				</section>
+
+				<section>
+					<h2>Démo client 2</h2>
+					<div style="background-color: #103B62">SignalR Abstract Service</div>
+					<div style="background-color: #20507B">SignalR Core Service</div>
+					<div style="background-color: #537DA2">Service</div>
+					<div style="background-color: #84A6C5">Store</div>
+					<!-- <div style="background-color: rgb(162, 182, 201)">View</div> -->
+					<aside class="notes">
+					</aside>
+				</section>
+
+				<section>
+					<h3>Bon à savoir</h3>
+					<!-- <section>
 						<img src="./images/connection-lost.png" style="background: none; border: none; box-shadow: none; height: 350px;" />
 						<pre><code class="hljs javascript" data-trim style="font-size: 18px;">
 							// Quand on perd la connection
@@ -317,7 +379,8 @@ connection.on("method1", (content) => method1(content));</code></pre>
 						<aside class="notes">
 							Alors que SignalR tentait une reconnexion automatique à la perte du serveur, ASP.NET Core SignalR ne le fait pas. C’est donc à nous de gérer ce cas.
 						</aside>
-					</section>
+					</section> -->
+
 					<section>
 						<h4>Scale-out</h4>
 						<img src="./images/signalrservicelogo.png" style="background: none; border: none; box-shadow: none;" />
@@ -340,17 +403,39 @@ connection.on("method1", (content) => method1(content));</code></pre>
 							<li>Windows Authentication</li>
 							<li class="fragment highlight-green">Bearer</li>
 						</ol>
-						<pre class="fragment"><code class="hljs javascript" data-trim>
-							this.connection = new HubConnectionBuilder()
-								.withUrl(this.url, {
-									accessTokenFactory: () => this.loginToken
-								})
-								.build();
-						</code></pre>
 						<aside class="notes">
 							Il est possible d’utiliser une authentification par Cookies, Windows Authentication et Bearer (celle que nous utiliserons le plus souvent afin de maximiser la compatibilité des services).
 						</aside>
 					</section>
+					<section>
+						<div>
+							<h5>ASP.NET Core</h5>
+							<pre><code class="hljs cs" data-trim style="font-size: 18px; line-height: 1.3em;">
+								options.Events = new JwtBearerEvents
+								{
+									OnMessageReceived = context =>
+									{
+										var accessToken = context.Request.Query["access_token"];
+										context.Token = accessToken;
+										...
+										return Task.CompletedTask;
+									}
+								};
+							</code></pre>
+						</div>
+						<div class="fragment">
+							<h5>TypeScript</h5>
+							<pre><code class="hljs javascript" data-trim style="font-size: 18px; ">
+								this.connection = new HubConnectionBuilder()
+									.withUrl(this.url, {
+										accessTokenFactory: () => this.loginToken
+									})
+									.build();
+							</code></pre>
+						</div>
+						<aside class="notes">
+						</aside>
+						</section>
 					<section>
 						<h4>Choix protocols</h4>
 						<p>Vous pouvez limiter les protocols à utiliser.</p>
@@ -360,6 +445,9 @@ connection.on("method1", (content) => method1(content));</code></pre>
 									signalR.HttpTransportType.LongPolling
 							})
 						</code></pre>
+						<aside class="notes">
+							Le choix du protocol se fera lui plutot du côté du serveur.
+						</aside>
 					</section>
 				</section>
 
@@ -378,45 +466,35 @@ connection.on("method1", (content) => method1(content));</code></pre>
 				</section>
 
 				<section>
-					<h3>Intégration dans un Store</h3>
-					<div>
-						<img class="fragment fade-in" style="height: 500px; background-color: white;" src="./images/redux.gif" />
-						<img class="fragment fade-in" style="height: 500px; background-color: white; position: absolute; left: 143px;" src="./images/redux-signalr.png" />
+
+					<h2>Question ?</h2>
+
+					<h4>Resources</h4>
+
+					<small>
+						<ul>
+							<li><a href="https://github.com/aspnet/SignalR">Repository officiel</a></li>
+							<li><a href="https://docs.microsoft.com/en-us/aspnet/core/signalr/introduction?view=aspnetcore-2.1">Documentation officielle</a></li>
+							<li><a href="https://devislandblog.wordpress.com/2018/05/23/real-time-data-with-microsoft-azure-signalr-service/">Article sur Microsoft Azure SignalR Service</a></li>
+							<li><a href="https://www.quora.com/What-is-the-difference-between-web-sockets-and-signalR">SignalR vs WebSocket</a></li>
+						</ul>
+					</small>
+
+				</section>
+
+				<section>
+					<div style="display: flex; justify-content: space-around;">
+						<div>
+							<img style="height: 300px;" src="./images/patrick-grasseels.jpg" />
+							<p>Patrick Grasseels</p>
+							<small style="padding: 10px;"><a href="https://www.linkedin.com/in/patrick-grasseels-a132a381/" target="_blank">https://www.linkedin.com/in/patrick-grasseels-a132a38</a></small>
+						</div>
+						<div>
+							<img style="height: 300px;" src="./images/david-gilson.jpg" />
+							<p>David Gilson</p>
+							<small style="padding: 10px;"><a href="https://www.linkedin.com/in/david-gilson-innovate/" target="_blank">https://www.linkedin.com/in/david-gilson-innovate</a></small>
+						</div>
 					</div>
-					<aside class="notes">
-						SignalR est son propre déclancheur.
-					</aside>
-				</section>
-
-				<section>
-					<h2>Démo serveur</h2>
-
-				</section>
-
-				<section>
-					<h2>Démo client</h2>
-					<div style="background-color: #103B62">SignalR Abstract Service</div>
-					<div style="background-color: #20507B">SignalR Core Service</div>
-					<div style="background-color: #537DA2">Service</div>
-					<div style="background-color: #84A6C5">Store</div>
-					<div style="background-color: rgb(162, 182, 201)">View</div>
-					<aside class="notes">
-						<p>Nous commencerons par faire une classe abstraite qui reprend les différents mécanismes transversaux comme la gestion en cas de déconnection</p>
-						<p>Le Core est aussi une classe abstraite qui hérite de celle du dessus afin de faire quelques configurations transversales</p>
-						<p>On va enfin créer un service sur base des couches précédentes et le consommer</p>
-					</aside>
-				</section>
-
-				<section>
-					<h2>Resources</h2>
-
-					<ul>
-						<li><a href="https://github.com/aspnet/SignalR">Repository officiel</a></li>
-						<li><a href="https://docs.microsoft.com/en-us/aspnet/core/signalr/introduction?view=aspnetcore-2.1">Documentation officielle</a></li>
-						<li><a href="https://devislandblog.wordpress.com/2018/05/23/real-time-data-with-microsoft-azure-signalr-service/">Article sur Microsoft Azure SignalR Service</a></li>
-						<li><a href="https://www.quora.com/What-is-the-difference-between-web-sockets-and-signalR">SignalR vs WebSocket</a></li>
-					</ul>
-
 				</section>
 			</div>
 		</div>

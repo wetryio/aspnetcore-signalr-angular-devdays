@@ -20,7 +20,7 @@ export class MessageStore {
     }
 
     @computed public get currentReceiverId(): string {
-        return this._currentChat.user.userId;
+        return this._currentChat.user.username;
     }
 
     public get connected(): Observable<boolean> {
@@ -32,12 +32,12 @@ export class MessageStore {
     }
 
     public getChatByUser(user: User): Chat {
-        let chat = this._conversations[user.userId];
+        let chat = this._conversations[user.username];
         if (!chat) {
             chat = new Chat(user);
             this._conversations = {
                 ...this._conversations,
-                [user.userId]: chat
+                [user.username]: chat
             };
         }
         return chat;
@@ -84,7 +84,7 @@ export class MessageStore {
     }
 
     @action public addMessage(message: Message) {
-        const chat = this.getChatByUser({ username: '?', userId: message.userId });
+        const chat = this.getChatByUser({ username: message.userId, userId: message.userId });
         chat.messages = [...chat.messages, message];
         if (message.mine) {
             this.chatService.sendMessage(message.userId, message.content);

@@ -5,6 +5,7 @@ import { ChartsModule } from 'ng2-charts/ng2-charts';
 
 import { MonitoringRoutingModule } from './monitoring-routing.module';
 import { MonitoringComponent } from './monitoring.component';
+import { MonitoringService } from './services/monitoring.service';
 
 @NgModule({
   imports: [
@@ -14,6 +15,9 @@ import { MonitoringComponent } from './monitoring.component';
   ],
   declarations: [
     MonitoringComponent
+  ],
+  providers: [
+    MonitoringService
   ]
 })
 export class MonitoringModule { }

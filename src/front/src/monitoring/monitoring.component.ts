@@ -1,4 +1,5 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
+import { MonitoringService } from './services/monitoring.service';
 
 @Component({
   selector: 'app-monitoring',
@@ -6,13 +7,13 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
   styleUrls: ['./monitoring.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MonitoringComponent implements OnInit {
+export class MonitoringComponent implements OnInit, OnDestroy {
 
   public lineChartOptions: any;
   public lineChartData: any[];
   public lineChartLabels: any[];
 
-  constructor() {
+  constructor(private monitoringService: MonitoringService) {
     this.lineChartOptions = {
       responsive: true
     };
@@ -23,6 +24,15 @@ export class MonitoringComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.monitoringService.run().subscribe();
+  }
+
+  ngOnDestroy() {
+    this.monitoringService.close();
+  }
+
+  public test() {
+    this.monitoringService.test();
   }
 
 }
