@@ -37,6 +37,12 @@
 					<section data-background-video="videos/intro.mp4">
 					</section>
 				</section>
+
+				<section>
+					<p><a href="http://devday.wetry.io">http://devday.wetry.io</a></p>
+					<img src="./images/qrcode.png" />
+				</section>
+
 				<section>
 					<h2>Contenu</h2>
 					<section>
@@ -44,14 +50,14 @@
 						<ol>
 							<li>Quesako ?</li>
 							<li>Utilité</li>
-							<li>Points d'attention</li>
+							<li>Clients dispinibles</li>
 						</ol>
 					</section>
 					<section>
 						<h3>Côté serveur</h3>
 						<ol>
-							<li>Sujet 1</li>
-							<li>Sujet 2</li>
+							<li>Hub</li>
+							<li>Typage</li>
 						</ol>
 					</section>
 					<section>
@@ -79,6 +85,14 @@
 							<li>...</li>
 						</ol>
 					</section>
+					<section>
+						<h3>Clients disponibles</h3>
+						<ul>
+							<li>.NetCore – Xamarin – WPF</li>
+							<li>Java – Android</li>
+							<li>Javascript – Typescript</li>
+						</ul>
+					</section>
 				</section>
 
 				<section>
@@ -86,7 +100,56 @@
 						<h2>Côté serveur</h2>
 					</section>
 
-					<!-- Add server sections -->
+					<section>
+						<h3>Hub</h3>
+						<img src="./images/hub.webp" />
+						<aside class="notes">
+							Le hub est la classe qui vas permettre la communication entre le server et les différents clients, il contiendra les méthode qui peuvent être appeler par le client, et fera l’appelle vers les méthodes disponible chez le client.
+						</aside>
+					</section>
+
+					<section>
+						<h3>Hub non typé</h3>
+						<pre><code class="hljs cs" data-trim style="font-size: 18px;">
+							Task SendAsync("Method",object arg1);
+							Task SendAsync("Method",object arg1, object arg2, ...);
+							Task SendCoreAsync("Method", object arg2, object[] args);
+						</code></pre>
+						<aside class="notes">
+							<ul>
+								<li>La hub sans typage contiendra deux méthode pour appeler les méthodes clientes</li>
+							</ul>
+						</aside>
+					</section>
+					<section>
+						<h3>Hub typé</h3>
+						<pre><code class="hljs cs" data-trim style="font-size: 18px; line-height: 1.3em;">
+							public interface IChatClient
+							{
+								Task ReceiveMessage(string user, string message);
+								Task ReceiveMessage(string message);
+							}
+
+							public class StronglyTypedChatHub : Hub&lsaquo;IChatClient&rsaquo;
+							{
+								public async Task SendMessage(string user, string message)
+								{
+									await Clients.All.ReceiveMessage(user, message);
+								}
+								public Task SendMessageToCaller(string message)
+								{
+									return Clients.Caller.ReceiveMessage(message);
+								}
+							}	
+						</code></pre>
+						<aside class="notes">
+							<ul>
+								<li>Le hub avec typage lui, vas s’appuyer sur le typage pour l’appelle des méthodes clientes.</li>
+								<li>Les méthodes SendAsync & SendCoreAsync ne seront plus disponible dans un hub typé. Les seul méthodes disponibles seront celles qui du typage.</li>
+							</ul>
+						</aside>
+					</section>
+
 				</section>
 
 				<section>
@@ -326,12 +389,12 @@ connection.on("method1", (content) => method1(content));</code></pre>
 				</section>
 
 				<section>
-					<h3>Démo serveur</h3>
+					<h2>Démo serveur</h2>
 
 				</section>
 
 				<section>
-					<h3>Démo client</h3>
+					<h2>Démo client</h2>
 					<div style="background-color: #103B62">SignalR Abstract Service</div>
 					<div style="background-color: #20507B">SignalR Core Service</div>
 					<div style="background-color: #537DA2">Service</div>
@@ -342,6 +405,18 @@ connection.on("method1", (content) => method1(content));</code></pre>
 						<p>Le Core est aussi une classe abstraite qui hérite de celle du dessus afin de faire quelques configurations transversales</p>
 						<p>On va enfin créer un service sur base des couches précédentes et le consommer</p>
 					</aside>
+				</section>
+
+				<section>
+					<h2>Resources</h2>
+
+					<ul>
+						<li><a href="https://github.com/aspnet/SignalR">Repository officiel</a></li>
+						<li><a href="https://docs.microsoft.com/en-us/aspnet/core/signalr/introduction?view=aspnetcore-2.1">Documentation officielle</a></li>
+						<li><a href="https://devislandblog.wordpress.com/2018/05/23/real-time-data-with-microsoft-azure-signalr-service/">Article sur Microsoft Azure SignalR Service</a></li>
+						<li><a href="https://www.quora.com/What-is-the-difference-between-web-sockets-and-signalR">SignalR vs WebSocket</a></li>
+					</ul>
+
 				</section>
 			</div>
 		</div>
