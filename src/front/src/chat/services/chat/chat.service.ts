@@ -7,9 +7,9 @@ import { SignalRCoreService, SignalrMethods, SignalrMethod } from '../../../core
 import { Message } from '../../../chat/models';
 
 interface ChatMethods extends SignalrMethods {
-  receive: SignalrMethod;
+  ReceiveMessage: SignalrMethod;
   logout: SignalrMethod;
-  updateUserList: SignalrMethod;
+  UpdateUserList: SignalrMethod;
 }
 
 @Injectable()
@@ -24,9 +24,9 @@ export class ChatService extends SignalRCoreService<ChatMethods> {
   protected url = '/chat';
 
   protected methods: ChatMethods = {
-    receive: (...data) => this.receive(...data),
+    ReceiveMessage: (...data) => this.receive(...data),
     logout: () => { console.log('logout'); },
-    updateUserList: () => this._refreshUserList.emit(true)
+    UpdateUserList: () => this._refreshUserList.emit(true)
   };
 
   constructor(private router: Router) {
