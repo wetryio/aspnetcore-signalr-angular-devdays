@@ -5,15 +5,18 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
-using server.Hubs;
+using Server.Hubs;
 using server.Models;
 using Server.Models;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 
 namespace Server.Hubs
 {
     public interface IChatClient
     {
         Task ReceiveMessage(string from, string content);
+        Task UpdateUserList();
         Task Logout();
     }
 
@@ -25,7 +28,7 @@ namespace Server.Hubs
         {
             get
             {
-                return Context.User.Claims.FirstOrDefault(f => f.Subject.Equals("uniqueId"))?.Value;
+                return Context.User.Claims.FirstOrDefault(f => f.Type.Equals(ClaimTypes.NameIdentifier))?.Value;
             }
         }
 
@@ -42,8 +45,9 @@ namespace Server.Hubs
 
         public override async Task OnConnectedAsync()
         {
-            await base.OnConnectedAsync();
+            await  Clients.AllExcept(GetCurrentUserId).UpdateUserList();
             await Groups.AddToGroupAsync(Context.ConnectionId, "SignalR Users");
+            await base.OnConnectedAsync();
         }
 
         public override async Task OnDisconnectedAsync(Exception exception)
@@ -51,5 +55,5 @@ namespace Server.Hubs
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, "SignalR Users");
             await base.OnDisconnectedAsync(exception);
         }
-    }
+   }
 }

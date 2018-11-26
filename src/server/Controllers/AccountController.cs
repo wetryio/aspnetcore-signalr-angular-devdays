@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
-using server.Hubs;
 using Server.Hubs;
 using Server.Models;
 using System;
@@ -40,6 +39,14 @@ namespace Server.Controllers
             _appSettings = appSettings.Value;
             _logger = logger;
             _hubClients = hubClients;
+        }
+
+        public string GetCurrentUserId
+        {
+            get
+            {
+                return User.Claims.FirstOrDefault(f => f.Type.Equals(ClaimTypes.NameIdentifier))?.Value;
+            }
         }
 
         [HttpPost]
@@ -105,6 +112,7 @@ namespace Server.Controllers
 
             return Ok(
                         _cache.GetOrCreate(USERS_CACHE_KEY, (e) => new List<ApplicationUser>())
+                            .Where(a => !a.Username.Equals(GetCurrentUserId))
                             .Select(s => new ApplicationUserDto()
                             {
                                 Username = s.Username

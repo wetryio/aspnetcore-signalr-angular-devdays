@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace server.Hubs
+namespace Server.Hubs
 {
     public interface IDashboardClient
     {
@@ -19,6 +19,16 @@ namespace server.Hubs
     {
         public DashboardHub()
         {
+        }
+
+        public override async Task  OnConnectedAsync()
+        {
+            await base.OnConnectedAsync();
+        }
+
+        public async Task Test(string testInput)
+        {
+            await Clients.All.UpdateUsers(10);
         }
     }
 }
