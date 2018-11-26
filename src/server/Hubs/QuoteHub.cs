@@ -1,23 +1,26 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.Extensions.Caching.Memory;
-using Newtonsoft.Json;
-using Server.Models;
+using System;
+using System.Threading.Tasks;
 
 namespace Server.Hubs
 {
     public class QuoteHub : Hub
     {
+        private string[] _quotes = new string[]
+        {
+            "God creates dinosaurs. God destroys dinosaurs. God creates man. Man destroys God. Man creates dinosaurs.",
+            "We spared no expense.",
+            "Life found a way."
+        };
+
+
         public override async Task OnConnectedAsync(){
             await base.OnConnectedAsync();
-            await Clients.All.SendAsync("UpdateQuote", "Quote de test icule <p");
         }
 
         public async Task UpdateQuote(){
-            await Clients.All.SendAsync("UpdateQuote", "Update quote ;)");
+            Random rnd = new Random();
+            await Clients.All.SendAsync("UpdateQuote", _quotes[rnd.Next(_quotes.Length - 1)]);
         }
     }
 }

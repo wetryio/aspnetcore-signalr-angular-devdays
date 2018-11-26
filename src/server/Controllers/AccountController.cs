@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using server.Hubs;
 using Server.Hubs;
 using Server.Models;
 using System;
@@ -24,42 +25,21 @@ namespace Server.Controllers
         private readonly IMemoryCache _cache;
         private readonly MemoryCacheEntryOptions _cacheEntryOptions;
         private readonly AppSettings _appSettings;
-
         private readonly ILogger<AccountController> _logger;
-
-        private readonly IHubContext<ChatHub> _hubContext;
+        private readonly IHubClients<IDashboardClient> _hubClients;
 
         private const string USERS_CACHE_KEY = "users";
 
-        public AccountController(IMemoryCache memoryCache, IOptions<AppSettings> appSettings, 
-                                    ILogger<AccountController> logger, IHubContext<ChatHub> hubContext)
+        public AccountController(IMemoryCache memoryCache, IOptions<AppSettings> appSettings,
+                                    ILogger<AccountController> logger, IHubClients<IDashboardClient> hubClients)
         {
             _cache = memoryCache;
             _cacheEntryOptions = new MemoryCacheEntryOptions()
-                .SetAbsoluteExpiration(TimeSpan.FromMinutes(10))
-                .RegisterPostEvictionCallback(callback: EvictionCallback, state: this);
+                .SetAbsoluteExpiration(TimeSpan.FromMinutes(60));
 
             _appSettings = appSettings.Value;
             _logger = logger;
-            _hubContext = hubContext;
-        }
-
-        private static void EvictionCallback(object key, object value, EvictionReason reason, object state)
-        {
-            // (state as AccountController)._cache.Remove(key);
-
-            //      List<ApplicationUser> users = (state as AccountController)._cache.GetOrCreate(USERS_CACHE_KEY, 
-            //             (e) => new List<ApplicationUser>()).Where(a => a.UserId != ((ApplicationUser)value).UserId).ToList();
-
-            // (state as AccountController)._cache.Set(USERS_CACHE_KEY, users);
-
-            // (state as AccountController)._hubContext
-            //                     .Clients
-            //                     .Client(((ApplicationUser)value).ConnectionId).SendAsync("logout");
-
-            // (state as AccountController)._hubContext
-            //                     .Clients.All.SendAsync("updateUserList");
-                                             
+            _hubClients = hubClients;
         }
 
         [HttpPost]
@@ -70,50 +50,54 @@ namespace Server.Controllers
 
             try
             {
-                if(_cache.GetOrCreate(USERS_CACHE_KEY, 
+                if (_cache.GetOrCreate(USERS_CACHE_KEY,
                         (e) => new List<ApplicationUser>()).Any(a => a.Username.Equals(user.Username)))
                 {
                     return StatusCode(409);
-                } else {
+                }
+                else
+                {
 
                     ApplicationUser appUser = new ApplicationUser(user.Username);
-                    
+
                     JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
                     byte[] key = Encoding.ASCII.GetBytes(_appSettings.Secret);
                     SecurityTokenDescriptor tokenDescriptor = new SecurityTokenDescriptor
                     {
-                        Subject = new ClaimsIdentity(new Claim[] 
+                        Subject = new ClaimsIdentity(new Claim[]
                         {
-                            new Claim("name", user.Username),
-                            new Claim("uniqueId", appUser.UserId.ToString())
+                            new Claim(ClaimTypes.NameIdentifier, user.Username)
                         }),
                         Expires = DateTime.UtcNow.AddMinutes(10),
                         SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
                     };
 
                     SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
-                    appUser.Token = tokenHandler.WriteToken(token);
                     UpdateCache(appUser);
 
-                    return Ok(new {
-                        AccessToken = appUser.Token
+                    return Ok(new
+                    {
+                        AccessToken = tokenHandler.WriteToken(token)
                     });
                 }
 
-            } catch(Exception) {
-
-            } 
+            }
+            catch (Exception e)
+            {
+                _logger.LogCritical("Error", e);
+            }
 
             return NoContent();
         }
 
-        private void UpdateCache(ApplicationUser appUser){
-            List<ApplicationUser> users = _cache.GetOrCreate(USERS_CACHE_KEY, 
+        private void UpdateCache(ApplicationUser appUser)
+        {
+            List<ApplicationUser> users = _cache.GetOrCreate(USERS_CACHE_KEY,
                         (e) => new List<ApplicationUser>());
 
+            _hubClients.All.UpdateUsers(users.Count);
             users.Add(appUser);
             _cache.Set(USERS_CACHE_KEY, users);
-            _cache.Set(appUser.Token, appUser, _cacheEntryOptions);
         }
 
         [HttpGet]
@@ -123,9 +107,8 @@ namespace Server.Controllers
 
             return Ok(
                         _cache.GetOrCreate(USERS_CACHE_KEY, (e) => new List<ApplicationUser>())
-                            .Where(a => a.UserId != Guid.Parse(User.Claims.FirstOrDefault(f => f.Type == "uniqueId").Value))
-                            .Select(s => new ApplicationUserDto(){
-                                UserId = s.UserId,
+                            .Select(s => new ApplicationUserDto()
+                            {
                                 Username = s.Username
                             }).ToArray()
                     );
