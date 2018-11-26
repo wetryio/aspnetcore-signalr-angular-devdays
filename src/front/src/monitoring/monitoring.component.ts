@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { MonitoringService } from './services/monitoring.service';
 import { Message } from 'src/chat/models';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-monitoring',
@@ -8,6 +9,10 @@ import { Message } from 'src/chat/models';
   styleUrls: ['./monitoring.component.scss']
 })
 export class MonitoringComponent implements OnInit, OnDestroy {
+
+  private runSubscription: Subscription;
+  private messageSubscription: Subscription;
+  private userNumberSubscription: Subscription;
 
   public messages: Message[];
   public lineChartOptions: any;
@@ -26,16 +31,25 @@ export class MonitoringComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.monitoringService.run().subscribe();
-    this.monitoringService.messageReceiver.subscribe(message => {
+    this.runSubscription = this.monitoringService.run().subscribe();
+    this.messageSubscription = this.monitoringService.messageReceiver.subscribe(message => {
       this.messages.push(message);
     });
-    this.monitoringService.userNumberReceiver.subscribe(userNumber => {
+    this.userNumberSubscription = this.monitoringService.userNumberReceiver.subscribe(userNumber => {
       this.addElementToShart(userNumber);
     });
   }
 
   ngOnDestroy() {
+    if (this.runSubscription) {
+      this.runSubscription.unsubscribe();
+    }
+    if (this.messageSubscription) {
+      this.messageSubscription.unsubscribe();
+    }
+    if (this.userNumberSubscription) {
+      this.userNumberSubscription.unsubscribe();
+    }
     this.monitoringService.close();
   }
 
