@@ -25,7 +25,6 @@ export class QuoteService extends SignalRCoreService<QuoteMethods> {
 
   protected methods: QuoteMethods = {
     UpdateQuote: (quote) => {
-      console.log('update quote', quote);
       this._quoteReceiver.next(quote);
     }
   };
@@ -38,6 +37,10 @@ export class QuoteService extends SignalRCoreService<QuoteMethods> {
 
   public close() {
     this.stop();
+  }
+
+  public updateQuote() {
+    this.send('UpdateQuote');
   }
 
 }

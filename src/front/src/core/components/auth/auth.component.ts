@@ -39,6 +39,10 @@ export class AuthComponent implements OnInit, OnDestroy {
     }
   }
 
+  public updateQuote() {
+    this.quoteService.updateQuote();
+  }
+
   private login(): Observable<any> {
     return this.authService.login(this.userName);
   }

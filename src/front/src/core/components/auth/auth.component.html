@@ -1,7 +1,7 @@
 
 <div class="p-3">
   <h1 class="text-center">Welcome</h1>
-  <blockquote class="text-center">{{ quote }}</blockquote>
+  <blockquote class="text-center" (click)="updateQuote()">{{ quote || 'pas de quote pour le moment' }}</blockquote>
 
   <form (ngSubmit)="start()">
     <div class="input-group form-group">
